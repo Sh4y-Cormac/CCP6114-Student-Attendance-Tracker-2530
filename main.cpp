@@ -3,26 +3,34 @@
 
 using namespace std;
 
-void create_sheet_structure(); // this function handles the sheet structure creation
+int create_sheet_structure(); // this function handles the sheet structure creation
 void create_attendance_row();
 
 
 int number_of_columns;
 int attendance_row_value;
 string column_names[10] = {"John","Jeffrey","Jack"};
-string column1_data[10] = {};
-string column2_data[10] = {};
-string column3_data[10] = {};
+string column1_data[10] = {}; // TEMP
+string column2_data[10] = {}; // TEMP
+string column3_data[10] = {}; // TEMP
+
+string row1_data[10] = {}; // TEMP
+string row2_data[10] = {}; // TEMP
+string row3_data[10] = {}; // TEMP
 
 
 
 int main()
 {
     create_sheet_structure();
+    cout << "Works" << endl;
+    cout << column1_data[0] << endl;
+    cout << column2_data[0] << endl;
+    cout << column3_data[0] << endl;
     return 0;
 }
 
-void create_sheet_structure()
+int create_sheet_structure()
 {
     cout << "Define number of columns (max 10): " << endl;
     cin >> number_of_columns;
@@ -40,12 +48,23 @@ void create_sheet_structure()
 
     do
     {
-        cout << "Press 1 for a new attendance row, Press 2 to exit attendance rows" << endl;
-        cin >> attendance_row_value;
-        create_attendance_row();
+         cout << "Press 1 for a new attendance row, Press 2 to exit attendance rows" << endl;
+         cin >> attendance_row_value;
+
+         if (attendance_row_value == 1)
+         {
+             create_attendance_row();
+         }
+         else
+         {
+             return 0;
+         }
+
+    } while(attendance_row_value != 2);
 
 
-    } while (attendance_row_value == 1);
+    return 0;
+
 
 }
 
@@ -57,19 +76,13 @@ void create_attendance_row()
 
     for (int x=0; x<number_of_columns; x++)
     {
-        string temp = "column";
-        string index = to_string(x);
-        string temp2 = temp.append(index);
-        string selection_data = temp2.append("_data");
-
+        string data;
         cout << "Enter " << column_names[x] << ":";
-        cin >> selection_data;
+        cin >> data;
+        // STOPPED RIGHT HERE -UMAR
+
+
     }
-
-    cout << column1_data[0] << endl;
-    cout << column2_data[0] << endl;
-    cout << column3_data[0]
-
 
 }
 
