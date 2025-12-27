@@ -32,7 +32,7 @@ private:
     }
 
 public:
-    current_table(string file_path = "", vector<pair<int, string>> field_type_list = {}, vector<vector<string>> table = {})
+    current_table(string file_path, vector<pair<int, string>> field_type_list, vector<vector<string>> table)
     {
         this->file_path = file_path;
         this->field_type_list = field_type_list;
@@ -151,14 +151,16 @@ enum types
 
 int number_of_columns;
 pair<int, string> column_names[10] = {}; // makes an array of all the columns
-current_table *const current_table_ptr = new current_table();
+current_table *const current_table_ptr = new current_table("", {}, {});
 
 int main()
 {
     create_sheet_structure(); // create sheet structure
     cout << "enter sheet name" << endl;
     cin >> current_table_ptr->file_path;
-    new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv");
+    // new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv");
+    // saving_file_data({{"Ye", "Ne"}}, current_table_ptr->file_path + ".csv", true);
+    *current_table_ptr = current_table(current_table_ptr->file_path + ".csv");
     current_table_ptr->display();
 
     return 0;
@@ -296,7 +298,7 @@ void new_file_create(vector<pair<int, string>> type_list, string file_path)
     fstream dir_file;
     if (check_if_file_exist(file_path))
     {
-        cout << "this file already exist";
+        cout << "this file already exist" << endl;
         return;
     }
 
@@ -334,7 +336,11 @@ bool type_checker(vector<string> &data, string file_path)
         }
         fields_line = fields_line.substr(fields_line.find(",") + 1);
     }
-
+    if (field_list.size() < data.size())
+    {
+        cout << "data entry scope is out of bounds!" << endl;
+        return false;
+    }
     for (int i = 0; i < field_list.size(); i++)
     {
         string temp = lowercase(removeSpaces(data[i]));
@@ -414,7 +420,8 @@ void saving_file_data(vector<vector<string>> row, string file_path, bool is_appe
             {
                 cout << " " << i << " |";
             }
-            cout << endl;
+            cout << endl
+                 << endl;
         }
     }
 
