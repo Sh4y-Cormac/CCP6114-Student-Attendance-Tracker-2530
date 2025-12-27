@@ -6,71 +6,6 @@
 #include <fstream>
 using namespace std;
 
-class current_table; // current table class to make object for easier file editing/selection
-
-string removeSpaces(string str); // remove space from inputed data
-
-string lowercase(string line); // change inputed data to lower case
-
-bool num_check(string line, bool is_float); // check if inputed data is Num
-
-bool check_if_file_exist(string file_path); // check if the file already exist
-
-void new_file_create(vector<pair<string, string>> type_list, string file_path); // creates file with inputed fields
-
-bool type_checker(vector<string> &data, string file_path); // checks the data types if it aligns with fields
-
-void saving_file_data(vector<vector<string>> row, string file_path, bool is_append); // save data to file, can append or rewrite file
-
-template <typename T>
-vector<T> array_to_vector(T some_array[]); // convert array to vector
-
-void create_sheet_structure(); // this function handles the sheet structure creation
-
-enum types
-{
-    Bool,
-    String,
-    Float,
-    Int
-
-};
-
-int number_of_columns;
-pair<int, string> column_names[10] = {}; // makes an array of all the columns
-current_table *const current_table_ptr = nullptr;
-int main()
-{
-    create_sheet_structure(); // create sheet structure
-    return 0;
-}
-
-void create_sheet_structure()
-{
-    cout << "Define number of columns (max 10): " << endl;
-    cin >> number_of_columns;
-
-    for (int x = 0; x < number_of_columns; x++) // loops through the number of columns and receives input for the names of the column
-    {
-        string name;
-        int type;
-        cout << "Enter column " << x + 1 << " name: " << endl;
-        getline(cin, name);
-        cin.clear();
-        cin.ignore(9999, '\n');
-
-        cout << "Enter column " << x + 1 << " data type (0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
-        cin >> type;
-        cin.clear();
-        cin.ignore(9999, '\n');
-
-        column_names[x].first = type;
-        column_names[x].second = name;
-    }
-
-    *current_table_ptr = current_table("", array_to_vector(column_names), {});
-}
-
 class current_table
 {
 public:
@@ -97,7 +32,7 @@ private:
     }
 
 public:
-    current_table(string file_path = "", vector<pair<int, string>> field_type_list, vector<vector<string>> table = {})
+    current_table(string file_path = "", vector<pair<int, string>> field_type_list = {}, vector<vector<string>> table = {})
     {
         this->file_path = file_path;
         this->field_type_list = field_type_list;
@@ -122,7 +57,7 @@ public:
 
         while (getline(stringstream(field_line), field, ','))
         {
-            field_type_list.push_back(pair<int, string>{stoi(field.substr(0, field.find('}'))), field.substr(field.find('}') + 1)});
+            field_type_list.push_back(pair<int, string>{stoi(field.substr(1, field.find('}'))), field.substr(field.find('}') + 1)});
             if (!field_line.find(","))
             {
                 break;
@@ -147,6 +82,12 @@ public:
     }
     void display()
     {
+        cout << "|";
+        for (auto field : field_type_list)
+        {
+            cout << field.second << "|";
+        }
+        cout << endl;
         for (vector<string> row : table)
         {
             cout << "|";
@@ -176,7 +117,72 @@ public:
             table.erase(table.begin() + index);
         }
     }
+}; // current table class to make object for easier file editing/selection
+
+string removeSpaces(string str); // remove space from inputed data
+
+string lowercase(string line); // change inputed data to lower case
+
+bool num_check(string line, bool is_float); // check if inputed data is Num
+
+bool check_if_file_exist(string file_path); // check if the file already exist
+
+void new_file_create(vector<pair<string, string>> type_list, string file_path); // creates file with inputed fields
+
+bool type_checker(vector<string> &data, string file_path); // checks the data types if it aligns with fields
+
+void saving_file_data(vector<vector<string>> row, string file_path, bool is_append); // save data to file, can append or rewrite file
+
+template <typename T>
+vector<T> array_to_vector(T some_array[], int array_size); // convert array to vector
+
+void create_sheet_structure(); // this function handles the sheet structure creation
+
+enum types
+{
+    Bool,
+    String,
+    Float,
+    Int
+
 };
+
+int number_of_columns;
+pair<int, string> column_names[10] = {}; // makes an array of all the columns
+current_table *const current_table_ptr = new current_table();
+int main()
+{
+    // current_table inUse_table;
+
+    create_sheet_structure(); // create sheet structure
+                              // cout << column_names[0].second;
+
+    // current_table_ptr->insert_row(0, {"1"});
+    current_table_ptr->display();
+    return 0;
+}
+
+void create_sheet_structure()
+{
+    cout << "Define number of columns (max 10): " << endl;
+    cin >> number_of_columns;
+
+    for (int x = 0; x < number_of_columns; x++) // loops through the number of columns and receives input for the names of the column
+    {
+        string name;
+        int type = 0;
+        cout << "Enter column " << x + 1 << " name: " << endl;
+        cin >> name;
+
+        cout << "Enter column " << x + 1 << " data type (0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
+        cin >> type;
+
+        column_names[x].first = type;
+        column_names[x].second = name;
+    }
+    *current_table_ptr = current_table("", array_to_vector(column_names, 0 + number_of_columns), {});
+    // array_to_vector(column_names, 0 + number_of_columns);
+}
 
 string removeSpaces(string str)
 {
@@ -401,12 +407,13 @@ void saving_file_data(vector<vector<string>> row, string file_path, bool is_appe
 }
 
 template <typename T>
-vector<T> array_to_vector(T some_array[])
+vector<T> array_to_vector(T some_array[], int array_size)
 {
     vector<T> temp_vector;
-    for (T element : some_array)
+    for (int i; i < array_size; i++)
     {
-        temp_vector.push_back(element)
+        temp_vector.push_back(some_array[i]);
+        // cout << some_array[i].first << some_array[i].second;
     }
     return temp_vector;
 }
