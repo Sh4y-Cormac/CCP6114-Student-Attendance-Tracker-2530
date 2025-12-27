@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-
+#include <filesystem>
 #include <vector>
 #include <sstream>
 #include <fstream>
@@ -123,6 +123,8 @@ string removeSpaces(string str); // remove space from inputed data
 
 string lowercase(string line); // change inputed data to lower case
 
+void delete_file(string file_path); // delete file from directory
+
 bool num_check(string line, bool is_float); // check if inputed data is Num
 
 bool check_if_file_exist(string file_path); // check if the file already exist
@@ -156,8 +158,9 @@ int main()
     create_sheet_structure(); // create sheet structure
     cout << "enter sheet name" << endl;
     cin >> current_table_ptr->file_path;
-    new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path);
+    new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv");
     current_table_ptr->display();
+
     return 0;
 }
 
@@ -204,6 +207,42 @@ string lowercase(string line)
         i = tolower(i);
     }
     return line;
+}
+
+void delete_file(string file_path)
+{
+    fstream dir_file;
+    string line;
+    vector<string> rewrite;
+    bool is_exist = false;
+    dir_file.open("dir_file.txt", ios::in);
+    while (getline(dir_file, line))
+    {
+        if (file_path != line)
+        {
+            rewrite.push_back(line);
+        }
+        else
+        {
+            is_exist = true;
+        }
+    }
+    dir_file.close();
+
+    if (is_exist)
+    {
+        filesystem::remove(file_path);
+        dir_file.open("dir_file.txt", ios::out);
+        for (string line : rewrite)
+        {
+            dir_file << line << endl;
+        }
+        dir_file.close();
+    }
+    else
+    {
+        cout << file_path << "does not exist!" << endl;
+    }
 }
 
 bool num_check(string line, bool is_float)
