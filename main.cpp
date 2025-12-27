@@ -127,7 +127,7 @@ bool num_check(string line, bool is_float); // check if inputed data is Num
 
 bool check_if_file_exist(string file_path); // check if the file already exist
 
-void new_file_create(vector<pair<string, string>> type_list, string file_path); // creates file with inputed fields
+void new_file_create(vector<pair<int, string>> type_list, string file_path); // creates file with inputed fields
 
 bool type_checker(vector<string> &data, string file_path); // checks the data types if it aligns with fields
 
@@ -150,14 +150,13 @@ enum types
 int number_of_columns;
 pair<int, string> column_names[10] = {}; // makes an array of all the columns
 current_table *const current_table_ptr = new current_table();
+
 int main()
 {
-    // current_table inUse_table;
-
     create_sheet_structure(); // create sheet structure
-                              // cout << column_names[0].second;
-
-    // current_table_ptr->insert_row(0, {"1"});
+    cout << "enter sheet name" << endl;
+    cin >> current_table_ptr->file_path;
+    new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path);
     current_table_ptr->display();
     return 0;
 }
@@ -252,7 +251,7 @@ bool check_if_file_exist(string file_path)
     return false;
 }
 
-void new_file_create(vector<pair<string, string>> type_list, string file_path)
+void new_file_create(vector<pair<int, string>> type_list, string file_path)
 {
 
     fstream dir_file;
