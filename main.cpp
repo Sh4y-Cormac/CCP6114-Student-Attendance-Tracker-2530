@@ -10,18 +10,18 @@ using namespace std;
 void create_sheet_structure(); // this function handles the sheet structure creation
 
 int number_of_columns;
-pair<int, string> column_names[10] = {}; // makes an array of all the columns
-current_table *const current_table_ptr = new current_table("", {}, {});
+pair<int, string> column_names[10] = {};                                // makes an array of all the columns
+current_table *const current_table_ptr = new current_table("", {}, {}); // makes empty current table that can be accessed
 
 int main()
 {
     create_sheet_structure(); // create sheet structure
     cout << "enter sheet name" << endl;
-    cin >> current_table_ptr->file_path;
-    // new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv");
-    // saving_file_data({{"Ye", "Ne"}}, current_table_ptr->file_path + ".csv", true);
-    *current_table_ptr = current_table(current_table_ptr->file_path + ".csv");
-    current_table_ptr->display();
+    cin >> current_table_ptr->file_path; // writing the file path of current file
+    // new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv"); // creating the file
+    // saving_file_data({{"Ye", "Ne"}}, current_table_ptr->file_path + ".csv", true); // writing new file data // {{"Ye","Ne"}} is a 2D vector so it enables to add many rows at once
+    *current_table_ptr = current_table(current_table_ptr->file_path + ".csv"); // getting table from existing file
+    current_table_ptr->display();                                              // display table content
 
     return 0;
 }
