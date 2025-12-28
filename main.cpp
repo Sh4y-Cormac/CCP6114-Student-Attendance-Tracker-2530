@@ -16,7 +16,7 @@ vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to 
 int number_of_columns;
 // makes an array of all the columns
 current_table *const current_table_ptr = new current_table("", {}, {}); // makes empty current table that can be accessed
-string *data_array_ptr = NULL;
+
 int attendance_row_value;
 pair<int, string> column_names[10] = {{1, "John"}, {1, "Jeffrey"}, {1, "Jack"}};
 string column1_data[10] = {}; // TEMP
@@ -39,7 +39,7 @@ int main()
     // new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv");  // creating the file
     // saving_file_data({{"Ye", "Ne"}}, current_table_ptr->file_path + ".csv", true);  // writing new file data // {{"Ye","Ne"}} is a 2D vector so it enables to add many rows at once // will skip if somethings wrong
     //*current_table_ptr = current_table(current_table_ptr->file_path + ".csv");  // getting table from existing file
-    // current_table_ptr->display();  // display table content
+    current_table_ptr->display(); // display table content
 
     return 0;
 }
@@ -92,16 +92,16 @@ void create_attendance_row()
     cout << "------------------------" << endl;
     cout << "Insert new attendance row" << endl;
     cout << "------------------------" << endl;
-    *data_array_ptr = {};
-    data_array_ptr = new string[number_of_columns];
+    string temp_array[10];
     for (int x = 0; x < number_of_columns; x++)
     {
         string data;
         cout << "Enter " << column_names[x].second << ":";
         cin >> data;
-        data_array_ptr[x] = data;
+        temp_array[x] = data;
         // STOPPED RIGHT HERE -UMAR
     }
+    current_table_ptr->insert_row(0 + current_table_ptr->get_table().size(), array_to_vector(temp_array, number_of_columns));
 }
 
 template <typename T>
