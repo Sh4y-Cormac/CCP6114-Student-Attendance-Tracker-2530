@@ -8,8 +8,8 @@
 #include <sstream>
 #include <fstream>
 using namespace std;
-// Function declarations (only the function names and parameters, not the logic)
-enum types
+// Functions
+enum types // types of data in table
 {
     Bool,
     String,
@@ -17,7 +17,7 @@ enum types
     Int
 
 };
-class current_table
+class current_table // current table class to make object for easier file editing/selection
 {
 public:
     string file_path;
@@ -128,9 +128,9 @@ public:
             table.erase(table.begin() + index);
         }
     }
-}; // current table class to make object for easier file editing/selection
+};
 
-string removeSpaces(string str)
+string removeSpaces(string str) // remove space in string
 {
 
     int count = 0;
@@ -144,7 +144,7 @@ string removeSpaces(string str)
     return str;
 }
 
-string lowercase(string line)
+string lowercase(string line) // turn string lowwercase
 {
     for (auto &i : line)
     {
@@ -153,7 +153,7 @@ string lowercase(string line)
     return line;
 }
 
-void delete_file(string file_path)
+void delete_file(string file_path) // delete file in filepath
 {
     fstream dir_file;
     string line;
@@ -189,7 +189,7 @@ void delete_file(string file_path)
     }
 }
 
-bool num_check(string line, bool is_float)
+bool num_check(string line, bool is_float) // check if data is a number (int or float)
 {
     int decimal_point = 0;
     const string alphabet = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+`~";
@@ -217,7 +217,7 @@ bool num_check(string line, bool is_float)
     return true;
 }
 
-bool check_if_file_exist(string file_path)
+bool check_if_file_exist(string file_path) // check if file exist in file dirctory
 {
     fstream dir_file;
     string line;
@@ -234,7 +234,7 @@ bool check_if_file_exist(string file_path)
     return false;
 }
 
-void new_file_create(vector<pair<int, string>> type_list, string file_path)
+void new_file_create(vector<pair<int, string>> type_list, string file_path) // create new file from fields with specified data types
 {
 
     fstream dir_file;
@@ -257,7 +257,7 @@ void new_file_create(vector<pair<int, string>> type_list, string file_path)
     o_current_file.close();
 }
 
-bool type_checker(vector<string> &data, string file_path)
+bool type_checker(vector<string> &data, string file_path) // check if data types align with fields
 {
     ifstream file;
     string fields_line;
@@ -338,7 +338,7 @@ bool type_checker(vector<string> &data, string file_path)
     return true;
 }
 
-void saving_file_data(vector<vector<string>> row, string file_path, bool is_append)
+void saving_file_data(vector<vector<string>> row, string file_path, bool is_append) // save data entered in to file
 {
     if (!check_if_file_exist(file_path))
     {
