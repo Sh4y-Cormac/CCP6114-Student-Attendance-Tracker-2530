@@ -57,8 +57,6 @@ int create_sheet_structure()
         cout << "Define number of columns (max 10): " << endl;
         cin >> number_of_columns;
     }
-    cin.clear();
-    cin.ignore(9999, '\n');
     if (number_of_columns <= 10 && number_of_columns > 0)
     {
         for (int x = 0; x < number_of_columns; x++) // iterates through the specified number of columns, asks for column name for each one and
