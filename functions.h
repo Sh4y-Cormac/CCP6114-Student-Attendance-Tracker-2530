@@ -338,7 +338,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
     return true;
 }
 
-void saving_file_data(vector<vector<string>> row, string file_path, bool is_append) // save data entered in to file
+void saving_file_data(vector<vector<string>> row, string file_path, bool is_append) // save data entered in to file // can append at the end of the file or rewrite the file from first row after fields
 {
     if (!check_if_file_exist(file_path))
     {
