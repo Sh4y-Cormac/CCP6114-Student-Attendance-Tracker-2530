@@ -278,9 +278,13 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
         }
         fields_line = fields_line.substr(fields_line.find(",") + 1);
     }
-    if (field_list.size() < data.size())
+    if (field_list.size() != data.size())
     {
-        cout << "data entry scope is out of bounds!" << endl;
+        if (data.size() > 0)
+        {
+            cout << "data entry scope is out of bounds!" << endl;
+        }
+
         return false;
     }
     for (int i = 0; i < field_list.size(); i++)
@@ -356,7 +360,7 @@ void saving_file_data(vector<vector<string>> row, string file_path, bool is_appe
         }
         else
         {
-            cout << "something went wrong at this row so we're skipping it:" << endl;
+            cout << "something went wrong at the following row(s) so we're skipping it/them:" << endl;
             cout << "|";
             for (string i : data)
             {
@@ -366,7 +370,10 @@ void saving_file_data(vector<vector<string>> row, string file_path, bool is_appe
                  << endl;
         }
     }
-
+    if (ok_rows.size() == 0)
+    {
+        return;
+    }
     if (is_append)
     {
 

@@ -8,6 +8,14 @@
 #include "functions.h"
 using namespace std;
 
+// enum types // types of data in table
+//{
+//   Bool, = 0
+//    String, = 1
+//    Float, =2
+//   Int = 3
+
+//};
 int create_sheet_structure();    // this function handles the sheet structure creation
 void create_attendance_row(int); // this function creates the attendance row process
 
@@ -26,11 +34,13 @@ int main()
     create_sheet_structure();
     cout << "sheet structure process has completed" << endl;
     cout << "enter sheet name: ";
-    cin >> current_table_ptr->file_path; // writing the file path of current file
-    // new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv");  // creating the file
-    // saving_file_data({{"Ye", "Ne"}}, current_table_ptr->file_path + ".csv", true);  // writing new file data // {{"Ye","Ne"}} is a 2D vector so it enables to add many rows at once // will skip if somethings wrong
-    //*current_table_ptr = current_table(current_table_ptr->file_path + ".csv");  // getting table from existing file
-    current_table_ptr->display(); // display table content
+    cin >> current_table_ptr->file_path;
+    cin.clear();
+    cin.ignore(9999, '\n');                                                                           // writing the file path of current file
+    new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv"); // creating the file
+    saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path + ".csv", false);   // writing new file data // uses a 2D vector so it enables to add many rows at once // will skip if somethings wrong // if true will append
+    *current_table_ptr = current_table(current_table_ptr->file_path + ".csv");                        // getting table from existing file
+    current_table_ptr->display();                                                                     // display table content
     return 0;
 }
 
@@ -49,9 +59,21 @@ int create_sheet_structure()
             int type = 0;
             cout << "Enter column " << x + 1 << " name: " << endl;
             cin >> name;
+            cin.clear();
+            cin.ignore(9999, '\n');
 
-            cout << "Enter column " << x + 1 << " data type (0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
+            cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
             cin >> type;
+
+            while (cin.fail())
+            {
+                cin.clear();
+                cin.ignore(9999, '\n');
+                cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
+                cin >> type;
+            }
+            cin.clear();
+            cin.ignore(9999, '\n');
 
             column_names[x].first = type;
             column_names[x].second = name;
@@ -62,7 +84,8 @@ int create_sheet_structure()
         {
             cout << "Press 1 for a new attendance row, Press 2 to exit attendance rows" << endl;
             cin >> attendance_row_value;
-
+            cin.clear();
+            cin.ignore(9999, '\n');
             if (attendance_row_value == 1)
             {
                 create_attendance_row(current_attendance_row);
@@ -70,6 +93,7 @@ int create_sheet_structure()
             }
             else
             {
+
                 return 0;
             }
 
@@ -98,11 +122,12 @@ void create_attendance_row(int current_attendance_row)
     for (int x = 0; x < number_of_columns; x++)
     {
         string inputs;
-        cout << "Enter " << column_names[x].first << ":";
+        cout << "Enter " << column_names[x].second << ":";
         cin >> inputs;
         student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
     }
     current_table_ptr->insert_row(0 + current_table_ptr->get_table().size(), student_data);
+    student_data.clear();
 }
 
 template <typename T>
