@@ -67,8 +67,6 @@ int create_sheet_structure()
             int type = 0;
             cout << "Enter column " << x + 1 << " name: " << endl;
             cin >> name;
-            cin.clear();
-            cin.ignore(9999, '\n');
 
             cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
             cin >> type;
@@ -80,8 +78,6 @@ int create_sheet_structure()
                 cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
                 cin >> type;
             }
-            cin.clear();
-            cin.ignore(9999, '\n');
 
             column_names[x].first = type;
             column_names[x].second = name;
@@ -92,8 +88,13 @@ int create_sheet_structure()
         {
             cout << "Press 1 for a new attendance row, Press 2 to exit attendance rows" << endl;
             cin >> attendance_row_value;
-            cin.clear();
-            cin.ignore(9999, '\n');
+            while (cin.fail())
+            {
+                cin.clear();
+                cin.ignore(9999, '\n');
+                cout << "Press 1 for a new attendance row, Press 2 to exit attendance rows" << endl;
+                cin >> attendance_row_value;
+            }
             if (attendance_row_value == 1)
             {
                 create_attendance_row(current_attendance_row);
