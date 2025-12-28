@@ -25,6 +25,7 @@ int main()
 {
     create_sheet_structure();
     cout << "sheet structure process has completed" << endl;
+    cout << "enter sheet name: ";
     cin >> current_table_ptr->file_path; // writing the file path of current file
     // new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv");  // creating the file
     // saving_file_data({{"Ye", "Ne"}}, current_table_ptr->file_path + ".csv", true);  // writing new file data // {{"Ye","Ne"}} is a 2D vector so it enables to add many rows at once // will skip if somethings wrong
@@ -97,7 +98,7 @@ void create_attendance_row(int current_attendance_row)
     for (int x = 0; x < number_of_columns; x++)
     {
         string inputs;
-        cout << "Enter " << column_names[x] << ":";
+        cout << "Enter " << column_names[x].first << ":";
         cin >> inputs;
         student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
     }
