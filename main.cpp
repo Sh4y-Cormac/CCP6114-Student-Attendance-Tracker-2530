@@ -19,7 +19,7 @@ int main()
     cout << "enter sheet name" << endl;
     cin >> current_table_ptr->file_path; // writing the file path of current file
     // new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv"); // creating the file
-    // saving_file_data({{"Ye", "Ne"}}, current_table_ptr->file_path + ".csv", true); // writing new file data // {{"Ye","Ne"}} is a 2D vector so it enables to add many rows at once
+    // saving_file_data({{"Ye", "Ne"}}, current_table_ptr->file_path + ".csv", true); // writing new file data // {{"Ye","Ne"}} is a 2D vector so it enables to add many rows at once // will skip if somethings wrong
     *current_table_ptr = current_table(current_table_ptr->file_path + ".csv"); // getting table from existing file
     current_table_ptr->display();                                              // display table content
 
