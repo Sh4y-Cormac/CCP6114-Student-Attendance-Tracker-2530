@@ -38,7 +38,7 @@ int main()
     cin.clear();
     cin.ignore(9999, '\n');                                                                           // writing the file path of current file
     new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv"); // creating the file
-    saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path + ".csv", false);   // writing new file data // uses a 2D vector so it enables to add many rows at once // will skip if somethings wrong // if true will append
+    saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path + ".csv", false);   // writing new file data // uses a 2D vector so it enables to add many rows at once // will skip certain rows if somethings wrong with said rows // if true will append
     *current_table_ptr = current_table(current_table_ptr->file_path + ".csv");                        // getting table from existing file
     current_table_ptr->display();                                                                     // display table content
     return 0;
