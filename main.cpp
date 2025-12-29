@@ -22,9 +22,10 @@ void create_attendance_row(int); // this function creates the attendance row pro
 template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to vectors bcs i fucking love vectors
 
-int number_of_columns;                                                  // number of columns that the user specified to add
-int attendance_row_value;                                               // input from user whether to continue the program or not
-int current_attendance_row = 1;                                         // measures the current attendance row being used
+int number_of_columns;          // number of columns that the user specified to add
+int attendance_row_value;       // input from user whether to continue the program or not
+int current_attendance_row = 1; // measures the current attendance row being used
+string new_file_path;
 pair<int, string> column_names[10] = {};                                // declares the maximum amount of columns possible
 vector<string> student_data{};                                          // ALL STUDENT DATA IS STORED IN THIS VECTOR!
 current_table *const current_table_ptr = new current_table("", {}, {}); // makes empty current table that can be accessed
@@ -34,13 +35,22 @@ int main()
     create_sheet_structure();
     cout << "sheet structure process has completed" << endl;
     cout << "enter sheet name: ";
-    cin >> current_table_ptr->file_path;
+
+    getline(cin, new_file_path);
+    while (check_if_file_exist(new_file_path)) // checks if file exist, if true, then ask for another sheet name
+    {
+        cin.clear();
+        cin.ignore(9999, '\n');
+        cout << "The sheet already exist enter another sheet name: ";
+        getline(cin, new_file_path);
+    }
+    current_table_ptr->file_path = new_file_path;
     cin.clear();
     cin.ignore(9999, '\n');                                                                           // writing the file path of current file
     new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path + ".csv"); // creating the file
     saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path + ".csv", false);   // writing new file data // uses a 2D vector so it enables to add many rows at once // will skip certain rows if somethings wrong with said rows // if true will append
-    *current_table_ptr = current_table(current_table_ptr->file_path + ".csv");                        // getting table from existing file
-    current_table_ptr->display();                                                                     // display table content
+    *current_table_ptr = current_table(current_table_ptr->file_path + ".csv");                        // getting table from existing file and writing it to curent file
+    current_table_ptr->display();                                                                     // display current table content
     return 0;
 }
 
