@@ -200,12 +200,8 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
         if (i == '.')
         {
             decimal_point++;
-            if ((decimal_point > 0 && !is_float) || (decimal_point > 1 && is_float))
-            {
-                return false;
-            }
-        }
-        if ((alphabet.find(i) != string::npos) || (numbers.find(i) == string::npos))
+         }
+        if ((alphabet.find(i) != string::npos) || (numbers.find(i) == string::npos) || (decimal_point > 0 && !is_float) || (decimal_point > 1 && is_float))
         {
             return false;
         }
