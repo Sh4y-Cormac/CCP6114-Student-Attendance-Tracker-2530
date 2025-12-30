@@ -1,3 +1,4 @@
 ye.csv
 FavouriteNums.csv
 scp_list.csv
+.csv

@@ -16,12 +16,14 @@ using namespace std;
 //   Int = 3
 
 //};
+int main_menu();               // main menu function that handles user input for main menu
 int create_sheet_structure();    // this function handles the sheet structure creation
 void create_attendance_row(int); // this function creates the attendance row process
 
 template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to vectors bcs i fucking love vectors
 
+int option;
 int number_of_columns;          // number of columns that the user specified to add
 int attendance_row_value;       // input from user whether to continue the program or not
 int current_attendance_row = 1; // measures the current attendance row being used
@@ -32,6 +34,8 @@ current_table *const current_table_ptr = new current_table("", {}, {}); // makes
 
 int main()
 {
+    
+
     create_sheet_structure();
     cout << "sheet structure process has completed" << endl;
     cout << "enter sheet name: ";
@@ -54,6 +58,56 @@ int main()
     return 0;
 }
 
+int main_menu()
+{
+    cout << "1. Create new attendance sheet" << endl;
+    cout << "2. Load existing attendance sheet" << endl;
+    cout << "3. Logout\n" << endl;
+
+    cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: " << endl;
+    while (cin >> option)
+    {
+        if (option >= 1 && option <= 3)
+        {
+            if (option == 1)
+            {
+                create_sheet_structure();
+                cout << "sheet structure process has completed" << endl;
+                cout << "enter sheet name: " << endl;
+                return 0;
+            }
+
+            else if (option == 2)
+            {
+                string load_file_path;
+                cout << "Enter existing attendance sheet file path: " << endl;
+                cin >> load_file_path;
+                if (!check_if_file_exist(load_file_path))
+                {
+                    cout << "This file doesn't exist" << endl;
+                    return main_menu();
+                }
+                *current_table_ptr = current_table(load_file_path);
+                current_table_ptr->display();
+                return 0;
+            }
+
+            else if (option == 3)
+            {
+                cout << "Logging out..." << endl;
+                break;
+            }
+        }
+        else
+        {
+            cout << "Invalid input. Please enter a number between 1 and 3." << endl;
+        }
+    }
+    
+    return 0; 
+}
+
+
 // Asks user for number of columns they want, asks them to name those columns, and asks them
 // to data enter any amount of attendance rows they want
 int create_sheet_structure()
@@ -64,6 +118,7 @@ int create_sheet_structure()
     {
         cin.clear();
         cin.ignore(9999, '\n');
+
         cout << "Define number of columns (max 10): " << endl;
         cin >> number_of_columns;
     }
@@ -151,7 +206,7 @@ template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size)
 {
     vector<T> temp_vector;
-    for (int i; i < array_size; i++)
+    for (int i = 0; i < array_size; i++)
     {
         temp_vector.push_back(some_array[i]);
         // cout << some_array[i].first << some_array[i].second;

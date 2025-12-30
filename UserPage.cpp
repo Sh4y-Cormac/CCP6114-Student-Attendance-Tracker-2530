@@ -71,7 +71,7 @@ int main()
                 system("cls");
                 cout << "Welcome, " << login_user << "." <<endl;
 
-                system("main.exe");
+                system("..\\CCP6114-Student-Attendance-Tracker-2530\\main.exe");
             }
             else {
                 cout << "Incorrect username or password."<< endl;
