@@ -205,11 +205,7 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
                 return false;
             }
         }
-        if (alphabet.find(i) != string::npos)
-        {
-            return false;
-        }
-        if (numbers.find(i) == string::npos)
+        if ((alphabet.find(i) != string::npos) || (numbers.find(i) == string::npos))
         {
             return false;
         }
