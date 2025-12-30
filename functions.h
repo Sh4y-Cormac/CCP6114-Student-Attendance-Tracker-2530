@@ -244,7 +244,7 @@ void new_file_create(vector<pair<int, string>> type_list, string file_path) // c
     o_current_file.open(file_path);
     for (pair i : type_list)
     {
-        o_current_file << "{" << i.first << "} " << removeSpaces(i.second, ',') << ",";
+        o_current_file << "{" << i.first << "} " << i.second << ",";
     }
     o_current_file.close();
 }
