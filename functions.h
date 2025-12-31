@@ -136,9 +136,12 @@ string removeChar(string str, char target = ' ') // remove space in string
     int count = 0;
 
     for (int i = 0; str[i]; i++)
+    {
         if (str[i] != target)
+        {
             str[count++] = str[i];
-
+        }
+    }
     str = str.substr(0, count);
     // cout << str << " ";
     return str;
