@@ -130,7 +130,7 @@ public:
     }
 };
 
-string removeSpaces(string str, char target = ' ') // remove space in string
+string removeChar(string str, char target = ' ') // remove space in string
 {
 
     int count = 0;
@@ -281,7 +281,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
     }
     for (int i = 0; i < field_list.size(); i++)
     {
-        string temp = lowercase(removeSpaces(data[i]));
+        string temp = lowercase(removeChar(data[i]));
 
         switch (field_list[i])
         {
@@ -294,7 +294,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             }
             else
             {
-                data[i] = removeSpaces(data[i]);
+                data[i] = removeChar(data[i]);
             }
             break;
         case String:
@@ -311,7 +311,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             }
             else
             {
-                data[i] = to_string(stof(removeSpaces(data[i])));
+                data[i] = to_string(stof(removeChar(data[i])));
             }
             break;
         case Int:
@@ -323,7 +323,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             else
             {
 
-                data[i] = to_string(stoi(removeSpaces(data[i])));
+                data[i] = to_string(stoi(removeChar(data[i])));
             }
             break;
         default:

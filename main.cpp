@@ -321,8 +321,8 @@ int create_sheet_structure()
                 string name;
                 int type = 0;
                 cout << "Enter column " << x + 1 << " name: " << endl;
-                getline(cin, name);                     // Use getline to read entire column name with spaces
-                while (name != removeSpaces(name, ',')) // get input that doesnt have commas
+                getline(cin, name);                   // Use getline to read entire column name with spaces
+                while (name != removeChar(name, ',')) // get input that doesnt have commas
                 {
                     cin.clear();
                     cin.ignore(9999, '\n');
@@ -401,7 +401,7 @@ void create_attendance_row(int current_attendance_row)
         cout << "Enter " << column_names[x].second << ": ";
         getline(cin, inputs); // Use getline to read entire input including spaces
         // Use getline to read entire column name with spaces
-        while (inputs != removeSpaces(inputs, ',')) // get input that doesnt have commas
+        while (inputs != removeChar(inputs, ',')) // get input that doesnt have commas
         {
             cin.clear();
             cin.ignore(9999, '\n');
