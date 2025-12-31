@@ -20,7 +20,7 @@ int main()
     cout << "=========================" <<endl;
     cout << "1. Sign up" <<endl;
     cout << "2. Login " <<endl;
-    cout << "3.Exit" <<endl;
+    cout << "3. Exit" <<endl;
     cout << " Type 1 to sign up, 2 to login or 3 to exit. " <<endl;
     cin >> option;
 
@@ -70,9 +70,9 @@ int main()
             if (exist == 1) {
                 system("cls");
                 cout << "Welcome, " << login_user << "." <<endl;
-
                 system("..\\CCP6114-Student-Attendance-Tracker-2530\\main.exe");
             }
+            
             else {
                 cout << "Incorrect username or password."<< endl;
             }
