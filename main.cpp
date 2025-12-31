@@ -20,6 +20,7 @@ int Userpage();
 int main_menu();                 // main menu function that handles user input for main menu
 int create_sheet_structure();    // this function handles the sheet structure creation
 void create_attendance_row(int); // this function creates the attendance row process
+int load_existing_attendance_sheet(); // function to load existing attendance sheet
 
 template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to vectors bcs i fucking love vectors
@@ -210,7 +211,7 @@ int Userpage()
 
 int main_menu()
 {
-    cout << "================================" << endl;
+    cout << "\n================================" << endl;
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
     cout << "================================" << endl;
     cout << "HI " << login_user << "! Welcome to main menu." << endl;
@@ -240,42 +241,22 @@ int main_menu()
                 return 0;
             }
 
+
             else if (option == 2)
             {
-                string load_file_path;
-                cout << "\nEnter existing attendance sheet file path: " << endl;
-                cin >> load_file_path;
-                if (!check_if_file_exist(load_file_path))
-                {
-                    cout << "This file doesn't exist" << endl;
-                    return main_menu();
-                }
-                *current_table_ptr = current_table(load_file_path);
-                current_table_ptr->display();
-
-                while (true)
-                {
+                bool returnToMainMenu = false;
+                
+                while (!returnToMainMenu) {
+                    load_existing_attendance_sheet();
+                    
                     cout << "\nType 1 to load another file, or 0 to return main menu: " << endl;
                     cin >> choice;
-
-                    if (choice == 0)
-                    {
-                        return main_menu();
+                    cin.ignore(); // Clear buffer
+                    
+                    if (choice == 0) {
+                        returnToMainMenu = true;
                     }
-                    else if (choice == 1)
-                    {
-                        cout << "Enter existing attendance sheet file path: " << endl;
-                        cin >> load_file_path;
-                        if (!check_if_file_exist(load_file_path))
-                        {
-                            cout << "This file doesn't exist" << endl;
-                            continue;
-                        }
-                        *current_table_ptr = current_table(load_file_path);
-                        current_table_ptr->display();
-                    }
-                    else
-                    {
+                    else if (choice != 1) {
                         cout << "Invalid option. Please enter 1 or 0." << endl;
                     }
                 }
@@ -284,7 +265,7 @@ int main_menu()
             else if (option == 3)
             {
                 cout << "Logging out..." << endl;
-                break;
+                system ("UserPage.exe");
             }
         }
         else
@@ -300,11 +281,13 @@ int main_menu()
 // to data enter any amount of attendance rows they want
 int create_sheet_structure()
 {
-    while (true)
-    {
-        cout << "Define number of columns (max 10): " << endl;
-        cin >> number_of_columns;
-        while (cin.fail())
+    cout << "\n==============================" << endl;
+    cout << "   CREATE ATTENDANCE SHEET   " << endl;    
+    cout << "==============================\n" << endl;
+
+    cout << "Define number of columns (max 10): " << endl;
+    cin >> number_of_columns;
+    while (cin.fail())
         {
             cin.clear();
             cin.ignore(9999, '\n');
@@ -312,8 +295,8 @@ int create_sheet_structure()
             cout << "Define number of columns (max 10): " << endl;
             cin >> number_of_columns;
         }
-
-        if (number_of_columns <= 10 && number_of_columns > 0)
+        
+    if (number_of_columns <= 10 && number_of_columns > 0)
         {
             cin.ignore(9999, '\n'); // Clear the input buffer
 
@@ -346,6 +329,7 @@ int create_sheet_structure()
                 column_names[x].first = type;
                 column_names[x].second = name, ',';
             }
+
             *current_table_ptr = current_table("", array_to_vector(column_names, 0 + number_of_columns), {});
 
             do
@@ -380,14 +364,15 @@ int create_sheet_structure()
 
             return 0;
         }
-        else
+        
+    else
         {
             cout << "Number of columns has to be a maximum of 10 and bigger than 0" << endl;
         }
-    }
 
-    return 0;
+return 0;
 }
+
 
 // the actual attendance row process where data inputted from user gets transferred into the array.
 void create_attendance_row(int current_attendance_row)
@@ -425,4 +410,22 @@ vector<T> array_to_vector(T some_array[], int array_size)
         // cout << some_array[i].first << some_array[i].second;
     }
     return temp_vector;
+}
+
+int load_existing_attendance_sheet() {
+    string load_file_path;
+    cout << "\n===========================" << endl;
+    cout << "   LOAD ATTENDANCE SHEET  " << endl;   
+    cout << "===========================\n" << endl;
+    cout << "Enter existing attendance sheet file path: " << endl;
+    cin >> load_file_path;
+    if (!check_if_file_exist(load_file_path))
+    {
+        cout << "\nThis file doesn't exist" << endl;
+        return main_menu();
+    }
+    *current_table_ptr = current_table(load_file_path);
+    current_table_ptr->display();
+
+    return 0;
 }
