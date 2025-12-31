@@ -130,13 +130,13 @@ public:
     }
 };
 
-string removeSpaces(string str) // remove space in string
+string removeChar(string str, char target = ' ') // remove space in string
 {
 
     int count = 0;
 
     for (int i = 0; str[i]; i++)
-        if (str[i] != ' ')
+        if (str[i] != target)
             str[count++] = str[i];
 
     str = str.substr(0, count);
@@ -192,7 +192,7 @@ void delete_file(string file_path) // delete file in filepath
 bool num_check(string line, bool is_float) // check if data is a number (int or float)
 {
     int decimal_point = 0;
-    const string alphabet = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+`~";
+    const string alphabet = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+`~{}";
     const string numbers = "0123456789";
 
     for (char i : line)
@@ -200,16 +200,8 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
         if (i == '.')
         {
             decimal_point++;
-            if ((decimal_point > 0 && !is_float) || (decimal_point > 1 && is_float))
-            {
-                return false;
-            }
         }
-        if (alphabet.find(i) != string::npos)
-        {
-            return false;
-        }
-        if (numbers.find(i) == string::npos)
+        if ((alphabet.find(i) != string::npos) || (numbers.find(i) == string::npos) || (decimal_point > 0 && !is_float) || (decimal_point > 1 && is_float))
         {
             return false;
         }
@@ -289,7 +281,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
     }
     for (int i = 0; i < field_list.size(); i++)
     {
-        string temp = lowercase(removeSpaces(data[i]));
+        string temp = lowercase(removeChar(data[i]));
 
         switch (field_list[i])
         {
@@ -302,11 +294,11 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             }
             else
             {
-                data[i] = removeSpaces(data[i]);
+                data[i] = removeChar(data[i]);
             }
             break;
         case String:
-            if (!(!temp.empty() && temp.size() > 1))
+            if (((!temp.empty() && temp.size() > 1)))
             {
                 return false;
             }
@@ -319,7 +311,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             }
             else
             {
-                data[i] = to_string(stof(removeSpaces(data[i])));
+                data[i] = to_string(stof(removeChar(data[i])));
             }
             break;
         case Int:
@@ -331,7 +323,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             else
             {
 
-                data[i] = to_string(stoi(removeSpaces(data[i])));
+                data[i] = to_string(stoi(removeChar(data[i])));
             }
             break;
         default:
@@ -342,7 +334,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
     return true;
 }
 
-void saving_file_data(vector<vector<string>> row, string file_path, bool is_append) // save data entered in to file // can append at the end of the file or rewrite the file from first row after fields
+void saving_file_data(vector<vector<string>> rows, string file_path, bool is_append) // save data entered in to file // can append at the end of the file or rewrite the file from first row after fields
 {
     if (!check_if_file_exist(file_path))
     {
@@ -352,7 +344,7 @@ void saving_file_data(vector<vector<string>> row, string file_path, bool is_appe
     fstream o_current_file;
 
     vector<vector<string>> ok_rows;
-    for (vector<string> data : row)
+    for (vector<string> data : rows)
     {
         if (type_checker(data, file_path))
         {
