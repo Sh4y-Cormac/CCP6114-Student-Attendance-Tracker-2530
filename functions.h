@@ -2,6 +2,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <filesystem>
 #include <vector>
@@ -104,7 +105,7 @@ public:
             cout << "|";
             for (string data : row)
             {
-                cout << data << "|";
+                cout << left << setw(10) << data << "|";
             }
             cout << endl;
         }
