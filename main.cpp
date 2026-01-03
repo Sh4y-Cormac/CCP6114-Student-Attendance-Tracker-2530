@@ -16,7 +16,7 @@ using namespace std;
 //   Int = 3
 
 //};
-int Userpage();
+int Userpage(); // This function is to handle user sign up and login
 int main_menu();                 // main menu function that handles user input for main menu
 int create_sheet_structure();    // this function handles the sheet structure creation
 void create_attendance_row(int); // this function creates the attendance row process
@@ -92,7 +92,7 @@ int Userpage()
         cout << " Type 1 to sign up, 2 to login or 3 to exit. " << endl;
         cin >> option;
 
-        if (option == 1)
+        if (option == 1)// when user type "1" it will bring them to the sign up page
         {
             system("cls");
             cout << "=========================" << endl;
@@ -101,7 +101,7 @@ int Userpage()
             cout << "No spaces can be added in your username and password" << endl;
             cout << "Enter your username: ";
             cin >> sign_user;
-            if (cin.peek() != '\n')
+            if (cin.peek() != '\n')// anything after the space has any character it will display error message.
             {
                 cout << "No spaces allowed in username!" << endl;
                 cin.clear();
@@ -123,7 +123,7 @@ int Userpage()
                 {
                     ofstream outFile("Database.txt", ios::app);
                     outFile << sign_user << " " << sign_pass << endl;
-                    outFile.close();
+                    outFile.close(); // This opens up Database.txt and add in username and password into the text file.
 
                     cout << "Registration complete!" << endl;
                 }
@@ -131,7 +131,7 @@ int Userpage()
             system("pause");
         }
 
-        else if (option == 2)
+        else if (option == 2)// This is the login page where the user enter the username and password
         {
             system("cls");
             cout << "=========================" << endl;
@@ -140,7 +140,7 @@ int Userpage()
             cout << "No spaces can be added in your username and password" << endl;
             cout << "Username:";
             cin >> login_user;
-            if (cin.peek() != '\n')
+            if (cin.peek() != '\n') // same function as when the user sign up
             {
                 cout << "No spaces allowed in username!" << endl;
                 cin.clear();
@@ -173,18 +173,18 @@ int Userpage()
                             if (login_user == saved_user && login_pass == saved_pass)
                             {
                                 exist = 1;
-                            } // when it is 1 a match is found
+                            } // when it is 1 a match of username and password is found
                         }
                         inFile.close();
 
-                        if (exist == 1)
+                        if (exist == 1)//when the username and password exist in the txt the user can proceed
                         {
                             system("cls");
-                            cout << "Welcome, " << login_user << "." << endl;
+                            //cout << "Welcome, " << login_user << "." << endl;
 
                             return 1;
                         }
-                        else
+                        else // if no username is found in the text file it will display the error message below
                         {
                             cout << "Incorrect username or password." << endl;
                         }
@@ -193,11 +193,11 @@ int Userpage()
             }
             system("pause");
         }
-        else if (option == 3)
+        else if (option == 3) //this function is to allow the user to quit the program at the menu.
         {
             cout << "Exiting portal...." << endl;
         }
-        else
+        else // error handling anything that is not 1,2 or 3 it will not allow the user to proceed and send the user back to the menu.
         {
             cout << "Please choose 1,2 or 3 only." << endl;
             cin.clear();
@@ -211,6 +211,7 @@ int Userpage()
 
 int main_menu()
 {
+    system("cls");
     cout << "\n================================" << endl;
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
     cout << "================================" << endl;
@@ -245,14 +246,14 @@ int main_menu()
             else if (option == 2)
             {
                 bool returnToMainMenu = false;
-                
+
                 while (!returnToMainMenu) {
                     load_existing_attendance_sheet();
-                    
+
                     cout << "\nType 1 to load another file, or 0 to return main menu: " << endl;
                     cin >> choice;
                     cin.ignore(); // Clear buffer
-                    
+
                     if (choice == 0) {
                         returnToMainMenu = true;
                     }
@@ -282,7 +283,7 @@ int main_menu()
 int create_sheet_structure()
 {
     cout << "\n==============================" << endl;
-    cout << "   CREATE ATTENDANCE SHEET   " << endl;    
+    cout << "   CREATE ATTENDANCE SHEET   " << endl;
     cout << "==============================\n" << endl;
 
     cout << "Define number of columns (max 10): " << endl;
@@ -295,7 +296,7 @@ int create_sheet_structure()
             cout << "Define number of columns (max 10): " << endl;
             cin >> number_of_columns;
         }
-        
+
     if (number_of_columns <= 10 && number_of_columns > 0)
         {
             cin.ignore(9999, '\n'); // Clear the input buffer
@@ -364,7 +365,7 @@ int create_sheet_structure()
 
             return 0;
         }
-        
+
     else
         {
             cout << "Number of columns has to be a maximum of 10 and bigger than 0" << endl;
@@ -415,7 +416,7 @@ vector<T> array_to_vector(T some_array[], int array_size)
 int load_existing_attendance_sheet() {
     string load_file_path;
     cout << "\n===========================" << endl;
-    cout << "   LOAD ATTENDANCE SHEET  " << endl;   
+    cout << "   LOAD ATTENDANCE SHEET  " << endl;
     cout << "===========================\n" << endl;
     cout << "Enter existing attendance sheet file path: " << endl;
     cin >> load_file_path;
