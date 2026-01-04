@@ -10,3 +10,6 @@ kkkk.csv
 lklklkl.csv
 oolbool.csv
 olcoolbool.csv
+oldcoolcool.csv
+old.csv
+int.csv

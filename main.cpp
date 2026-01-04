@@ -29,16 +29,16 @@
 #include "functions.h"
 using namespace std;
 
-// enum types // types of data in table
-//{
-//   Bool, = 0
-//    String, = 1
-//    Float, =2
-//   Int = 3
+enum types // types of data in table
+{
+    Bool,
+    String,
+    Float,
+    Int
 
-//};
+};
 int Userpage();
-void displayMainMenu();                     // This function is to handle user sign up and login
+void displayMainMenu();               // This function is to handle user sign up and login
 int main_menu();                      // main menu function that handles user input for main menu
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
@@ -66,7 +66,8 @@ int main()
         string filename = login_user + ".csv";
 
         // Only load if file exists
-        if (check_if_file_exist(filename)) {
+        if (check_if_file_exist(filename))
+        {
             *current_table_ptr = current_table(filename);
             current_table_ptr->display();
         }
@@ -74,8 +75,9 @@ int main()
         int menuResult = main_menu();
 
         // If user logged out (returned -1), restart program
-        if (menuResult == -1) {
-            main();  // Restart
+        if (menuResult == -1)
+        {
+            main(); // Restart
             return 0;
         }
 
@@ -104,11 +106,12 @@ int main()
         // Get the field definitions from column_names array (which was populated in create_sheet_structure)
         vector<pair<int, string>> field_definitions;
 
-        for (int i = 0; i < number_of_columns; i++) {
+        for (int i = 0; i < number_of_columns; i++)
+        {
             field_definitions.push_back(column_names[i]);
         }
 
-        new_file_create(field_definitions, current_table_ptr->file_path);  // creating the file
+        new_file_create(field_definitions, current_table_ptr->file_path); // creating the file
 
         saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
 
@@ -251,7 +254,8 @@ int Userpage()
 }
 //*******************************************************************************************
 
-void displayMainMenu() {
+void displayMainMenu()
+{
     system("cls");
     cout << "\n================================" << endl;
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
@@ -278,7 +282,7 @@ int main_menu()
                 cin.ignore(9999, '\n');
                 cout << "Invalid input. Please enter a number between 1 and 3." << endl;
                 system("pause");
-                break;  // Break to show menu again
+                break; // Break to show menu again
             }
 
             if (option >= 1 && option <= 3)
@@ -306,7 +310,7 @@ int main_menu()
                         if (choice == 0)
                         {
                             returnToMainMenu = true;
-                            break;  // Exit load loop
+                            break; // Exit load loop
                         }
                         else if (choice != 1)
                         {
@@ -314,22 +318,22 @@ int main_menu()
                             system("pause");
                         }
                     }
-                    break;  // Break to outer loop to show menu again
+                    break; // Break to outer loop to show menu again
                 }
 
                 else if (option == 3)
                 {
                     cout << "Logging out..." << endl;
                     system("pause");
-                    Userpage();  // Go back to login
-                    return -1;   // Indicate logout
+                    Userpage(); // Go back to login
+                    return -1;  // Indicate logout
                 }
             }
             else
             {
                 cout << "Invalid input. Please enter a number between 1 and 3." << endl;
                 system("pause");
-                break;  // Break to show menu again
+                break; // Break to show menu again
             }
         }
     }
@@ -453,7 +457,12 @@ void create_attendance_row(int current_attendance_row)
     for (int x = 0; x < number_of_columns; x++)
     {
         string inputs;
+
         cout << "Enter " << column_names[x].second << ": ";
+        if (column_names[x].first == 0)
+        {
+            cout << "(enter true/false)";
+        }
         getline(cin, inputs); // Use getline to read entire input including spaces
         // Use getline to read entire column name with spaces
         while (inputs != removeChar(inputs, ',')) // get input that doesnt have commas

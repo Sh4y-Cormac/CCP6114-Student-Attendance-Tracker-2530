@@ -314,7 +314,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
 
             if (!(temp == "true" || temp == "false"))
             {
-                cout << temp;
+
                 return false;
             }
             else
