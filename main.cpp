@@ -29,16 +29,16 @@
 #include "functions.h"
 using namespace std;
 
-enum types // types of data in table
-{
-    Bool,
-    String,
-    Float,
-    Int
+// enum types // types of data in table
+//{
+//   Bool, = 0
+//    String, = 1
+//    Float, =2
+//   Int = 3
 
-};
-int Userpage();
-void displayMainMenu();               // This function is to handle user sign up and login
+//};
+int Userpage(); // This function is to handle user sign up and login
+void displayMainMenu();
 int main_menu();                      // main menu function that handles user input for main menu
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
