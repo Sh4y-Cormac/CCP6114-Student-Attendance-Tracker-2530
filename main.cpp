@@ -211,7 +211,6 @@ int Userpage()
 
 int main_menu()
 {
-    system("cls");
     cout << "\n================================" << endl;
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
     cout << "================================" << endl;
