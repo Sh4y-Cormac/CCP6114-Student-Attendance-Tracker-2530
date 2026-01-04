@@ -1,12 +1,21 @@
 #include <iostream>
 #include <string>
 #include <vector> // resizeable array or inf amount array
-
-#include <vector>
 #include <sstream>
 #include <fstream>
 #include "functions.h"
+#include <filesystem>
 using namespace std;
+
+
+bool file_exists(const std::string& file_path) {
+    // Attempt to open the file for input
+    std::ifstream file(file_path);
+    // The stream can be implicitly converted to a bool to check its state
+    bool exists = static_cast<bool>(file);
+    // The file is automatically closed when the ifstream object goes out of scope
+    return exists;
+}
 
 // enum types // types of data in table
 //{
