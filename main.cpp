@@ -497,7 +497,7 @@ int load_existing_attendance_sheet()
     cout << "   LOAD ATTENDANCE SHEET  " << endl;
     cout << "===========================\n"
          << endl;
-    cout << "Enter existing attendance sheet file path: " << endl;
+    cout << "Enter existing attendance sheet file name with .csv: " << endl;
     cin >> load_file_path;
     if (!check_if_file_exist(load_file_path))
     {
