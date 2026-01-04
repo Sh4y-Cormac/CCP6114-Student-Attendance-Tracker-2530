@@ -324,7 +324,15 @@ int create_sheet_structure()
             {
                 cin.clear();
                 cin.ignore(9999, '\n');
-                cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int) (P.S use 0 until 3 only): " << endl;
+                if (!(type < 0 || type > 3))
+                {
+                    cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int) : " << endl;
+                }
+                else
+                {
+                    cout << "Please enter column " << x + 1 << " data type that is in the range of 0 until 3 " << endl
+                         << "(type 0 for bool, 1 for string, 2 for float, 3 for int) : " << endl;
+                }
                 cin >> type;
             }
 

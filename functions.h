@@ -31,7 +31,7 @@ private:
         fstream dir_file;
         string line;
         dir_file.open("dir_file.txt", ios::in);
-        while (getline(dir_file, line, '\n'))
+        while (getline(dir_file, line, '\n')) // iterates thru all lines in dir_file.txt to find file_path
         {
             if (line == file_path)
             {
@@ -65,12 +65,12 @@ public:
         }
         this->file_path = file_path;
         read_file.open(file_path);
-        getline(read_file, field_line, '\n');
+        getline(read_file, field_line, '\n'); // gets first line of read_file
 
-        while (getline(stringstream(field_line), field, ','))
+        while (getline(stringstream(field_line), field, ',')) // then iterate tru to append to field_type_list
         {
             field_type_list.push_back(pair<int, string>{stoi(field.substr(1, field.find('}'))), field.substr(field.find('}') + 1)});
-            if (!field_line.find(","))
+            if (!field_line.find(",")) // end of field then break
             {
                 break;
             }
