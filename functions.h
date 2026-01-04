@@ -197,7 +197,7 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
 {
     int decimal_point = 0;
     const string alphabet = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+`~{}";
-    const string numbers = "0123456789";
+    const string numbers = "0123456789.";
 
     for (char i : line)
     {
@@ -207,6 +207,7 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
         }
         if ((alphabet.find(i) != string::npos) || (numbers.find(i) == string::npos) || (decimal_point > 0 && !is_float) || (decimal_point > 1 && is_float))
         {
+
             return false;
         }
     }
@@ -285,7 +286,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
     }
     for (int i = 0; i < field_list.size(); i++)
     {
-        string temp = lowercase(removeChar(data[i]));
+        string temp = lowercase(removeChar(data[i], ' '));
 
         switch (field_list[i])
         {
@@ -293,16 +294,16 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
 
             if (!(temp == "true" || temp == "false"))
             {
-
+                cout << temp;
                 return false;
             }
             else
             {
-                data[i] = removeChar(data[i]);
+                data[i] = removeChar(data[i], ' ');
             }
             break;
         case String:
-            if (((!temp.empty() && temp.size() > 1)))
+            if ((temp.empty()))
             {
                 return false;
             }
@@ -315,7 +316,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             }
             else
             {
-                data[i] = to_string(stof(removeChar(data[i])));
+                data[i] = to_string(stof(removeChar(data[i], ' ')));
             }
             break;
         case Int:
@@ -327,7 +328,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             else
             {
 
-                data[i] = to_string(stoi(removeChar(data[i])));
+                data[i] = to_string(stoi(removeChar(data[i], ' ')));
             }
             break;
         default:
