@@ -16,7 +16,8 @@ using namespace std;
 //   Int = 3
 
 //};
-int Userpage();                       // This function is to handle user sign up and login
+int Userpage();  
+void displayMainMenu();                     // This function is to handle user sign up and login
 int main_menu();                      // main menu function that handles user input for main menu
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
@@ -39,14 +40,25 @@ string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass;
 
 int main()
 {
-
     if (Userpage() == 1)
     {
         string filename = login_user + ".csv";
-        *current_table_ptr = current_table(filename);
-        current_table_ptr->display();
-        main_menu(); // main menu function call
-
+        
+        // Only load if file exists
+        if (check_if_file_exist(filename)) {
+            *current_table_ptr = current_table(filename);
+            current_table_ptr->display();
+        }
+        
+        int menuResult = main_menu();
+        
+        // If user logged out (returned -1), restart program
+        if (menuResult == -1) {
+            main();  // Restart
+            return 0;
+        }
+        
+        // Only continue with file creation if we're still here
         cout << "Enter sheet name: " << endl;
         getline(cin, new_file_path);
 
@@ -67,11 +79,20 @@ int main()
         }
 
         current_table_ptr->file_path = new_file_path;
-        new_file_create(current_table_ptr->get_field_type_list(), current_table_ptr->file_path); // creating the file
-        saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);   // writing new file data // uses a 2D vector so it enables to add many rows at once // will skip certain rows if somethings wrong with said rows // if true will append
-        *current_table_ptr = current_table(current_table_ptr->file_path);                        // getting table from existing file and writing it to curent file
-        current_table_ptr->display();                                                            // display current table content
 
+        // Get the field definitions from column_names array (which was populated in create_sheet_structure)
+        vector<pair<int, string>> field_definitions;
+        
+        for (int i = 0; i < number_of_columns; i++) {
+            field_definitions.push_back(column_names[i]);
+        }
+
+        new_file_create(field_definitions, current_table_ptr->file_path);  // creating the file
+
+        saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
+
+        *current_table_ptr = current_table(current_table_ptr->file_path);
+        current_table_ptr->display();
         delete current_table_ptr; // Free allocated memory
         return 0;
     }
@@ -209,8 +230,7 @@ int Userpage()
 }
 //*******************************************************************************************
 
-int main_menu()
-{
+void displayMainMenu() {
     system("cls");
     cout << "\n================================" << endl;
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
@@ -220,60 +240,76 @@ int main_menu()
     cout << "2. Load existing attendance sheet" << endl;
     cout << "3. Logout\n"
          << endl;
+    cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: ";
+}
 
-    cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: " << endl;
-
+int main_menu()
+{
     while (true)
     {
-        if (!(cin >> option))
-        {
-            cin.clear();
-            cin.ignore(9999, '\n');
-            cout << "Invalid input. Please enter a number between 1 and 3." << endl;
-            continue;
-        }
+        displayMainMenu();
 
-        if (option >= 1 && option <= 3)
+        while (true)
         {
-            if (option == 1)
+            if (!(cin >> option))
             {
-                create_sheet_structure();
-                cout << "\nSheet structure process has completed！" << endl;
-                return 0;
+                cin.clear();
+                cin.ignore(9999, '\n');
+                cout << "Invalid input. Please enter a number between 1 and 3." << endl;
+                system("pause");
+                break;  // Break to show menu again
             }
 
-            else if (option == 2)
+            if (option >= 1 && option <= 3)
             {
-                bool returnToMainMenu = false;
-
-                while (!returnToMainMenu)
+                if (option == 1)
                 {
-                    load_existing_attendance_sheet();
+                    create_sheet_structure();
+                    cout << "\nSheet structure process has completed！" << endl;
+                    system("pause");
+                    return 0;
+                }
 
-                    cout << "\nType 1 to load another file, or 0 to return main menu: " << endl;
-                    cin >> choice;
-                    cin.ignore(); // Clear buffer
+                else if (option == 2)
+                {
+                    bool returnToMainMenu = false;
 
-                    if (choice == 0)
+                    while (!returnToMainMenu)
                     {
-                        returnToMainMenu = true;
+                        load_existing_attendance_sheet();
+
+                        cout << "\nType 1 to load another file, or 0 to return main menu: " << endl;
+                        cin >> choice;
+                        cin.ignore(); // Clear buffer
+
+                        if (choice == 0)
+                        {
+                            returnToMainMenu = true;
+                            break;  // Exit load loop
+                        }
+                        else if (choice != 1)
+                        {
+                            cout << "Invalid option. Please enter 1 or 0." << endl;
+                            system("pause");
+                        }
                     }
-                    else if (choice != 1)
-                    {
-                        cout << "Invalid option. Please enter 1 or 0." << endl;
-                    }
+                    break;  // Break to outer loop to show menu again
+                }
+
+                else if (option == 3)
+                {
+                    cout << "Logging out..." << endl;
+                    system("pause");
+                    Userpage();  // Go back to login
+                    return -1;   // Indicate logout
                 }
             }
-
-            else if (option == 3)
+            else
             {
-                cout << "Logging out..." << endl;
-                system("UserPage.exe");
+                cout << "Invalid input. Please enter a number between 1 and 3." << endl;
+                system("pause");
+                break;  // Break to show menu again
             }
-        }
-        else
-        {
-            cout << "Invalid input. Please enter a number between 1 and 3." << endl;
         }
     }
 
@@ -436,7 +472,7 @@ int load_existing_attendance_sheet()
     if (!check_if_file_exist(load_file_path))
     {
         cout << "\nThis file doesn't exist" << endl;
-        return main_menu();
+        return -1;
     }
     *current_table_ptr = current_table(load_file_path);
     current_table_ptr->display();
