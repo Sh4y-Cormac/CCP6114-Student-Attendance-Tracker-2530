@@ -16,9 +16,8 @@
 //           A function can be made with parameters and can be put inside the code of member 2 for saving.
 // Member 3: Created a login/signin welcome screen where the lecturer has to sign into her credentials.
 //           Implement basic error handling, include file saving as well for passwords and username.
-// Member 4: Implement a basic directory which main_menu after the original welcome screen, such as “ Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to log out: ”,
-//           Implement basic error handling as well, e.g “ Invalid input. Please enter a number between 1 and 3.” All these functions allow a good layout as a user-friendly interface.
-
+// Member 4: Implement a basic directory which main_menu after the original welcome screen, such as ï¿½ Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to log out: ï¿½,
+//           Implement basic error handling as well, e.g ï¿½ Invalid input. Please enter a number between 1 and 3.ï¿½ All these functions allow a good layout as a user-friendly interface.
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
@@ -218,7 +217,7 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
 {
     int decimal_point = 0;
     const string alphabet = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+`~{}";
-    const string numbers = "0123456789.";
+    const string numbers = "0123456789..";
 
     for (char i : line)
     {
