@@ -2,8 +2,3 @@ ye.csv
 FavouriteNums.csv
 scp_list.csvTry.csv
 
-Tutor.csv
-Test.csv
-ID.csv
-Yipe.csv
-Best.csv
