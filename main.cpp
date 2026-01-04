@@ -326,6 +326,7 @@ int create_sheet_structure()
                 cin.ignore(9999, '\n');
                 if (!(type < 0 || type > 3))
                 {
+                    cout << "You entered an invalid input. Please enter a number." << endl;
                     cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int) : " << endl;
                 }
                 else
