@@ -37,8 +37,8 @@ using namespace std;
 //   Int = 3
 
 //};
-int Userpage();
-void displayMainMenu();                     // This function is to handle user sign up and login
+int Userpage();                       // This function is to handle user sign up and login
+void displayMainMenu();
 int main_menu();                      // main menu function that handles user input for main menu
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
