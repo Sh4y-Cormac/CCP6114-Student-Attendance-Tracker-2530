@@ -230,8 +230,13 @@ int Userpage()
 }
 //*******************************************************************************************
 
+<<<<<<< HEAD
 void displayMainMenu() {
     system("cls");
+=======
+int main_menu()
+{
+>>>>>>> aee342cc4e6425489306afe4893cf81cc11c2f47
     cout << "\n================================" << endl;
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
     cout << "================================" << endl;
