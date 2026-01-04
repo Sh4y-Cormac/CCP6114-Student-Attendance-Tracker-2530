@@ -324,7 +324,7 @@ int create_sheet_structure()
             {
                 cin.clear();
                 cin.ignore(9999, '\n');
-                cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
+                cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int) (P.S use 0 until 3 only): " << endl;
                 cin >> type;
             }
 
