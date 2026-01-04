@@ -82,7 +82,7 @@ int main()
 
         // Get the field definitions from column_names array (which was populated in create_sheet_structure)
         vector<pair<int, string>> field_definitions;
-        
+
         for (int i = 0; i < number_of_columns; i++) {
             field_definitions.push_back(column_names[i]);
         }
@@ -230,13 +230,8 @@ int Userpage()
 }
 //*******************************************************************************************
 
-<<<<<<< HEAD
 void displayMainMenu() {
     system("cls");
-=======
-int main_menu()
-{
->>>>>>> aee342cc4e6425489306afe4893cf81cc11c2f47
     cout << "\n================================" << endl;
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
     cout << "================================" << endl;
