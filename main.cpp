@@ -16,10 +16,10 @@ using namespace std;
 //   Int = 3
 
 //};
-int Userpage(); // This function is to handle user sign up and login
-int main_menu();                 // main menu function that handles user input for main menu
-int create_sheet_structure();    // this function handles the sheet structure creation
-void create_attendance_row(int); // this function creates the attendance row process
+int Userpage();                       // This function is to handle user sign up and login
+int main_menu();                      // main menu function that handles user input for main menu
+int create_sheet_structure();         // this function handles the sheet structure creation
+void create_attendance_row(int);      // this function creates the attendance row process
 int load_existing_attendance_sheet(); // function to load existing attendance sheet
 
 template <typename T>
@@ -92,7 +92,7 @@ int Userpage()
         cout << " Type 1 to sign up, 2 to login or 3 to exit. " << endl;
         cin >> option;
 
-        if (option == 1)// when user type "1" it will bring them to the sign up page
+        if (option == 1) // when user type "1" it will bring them to the sign up page
         {
             system("cls");
             cout << "=========================" << endl;
@@ -101,7 +101,7 @@ int Userpage()
             cout << "No spaces can be added in your username and password" << endl;
             cout << "Enter your username: ";
             cin >> sign_user;
-            if (cin.peek() != '\n')// anything after the space has any character it will display error message.
+            if (cin.peek() != '\n') // anything after the space has any character it will display error message.
             {
                 cout << "No spaces allowed in username!" << endl;
                 cin.clear();
@@ -131,7 +131,7 @@ int Userpage()
             system("pause");
         }
 
-        else if (option == 2)// This is the login page where the user enter the username and password
+        else if (option == 2) // This is the login page where the user enter the username and password
         {
             system("cls");
             cout << "=========================" << endl;
@@ -177,10 +177,10 @@ int Userpage()
                         }
                         inFile.close();
 
-                        if (exist == 1)//when the username and password exist in the txt the user can proceed
+                        if (exist == 1) // when the username and password exist in the txt the user can proceed
                         {
                             system("cls");
-                            //cout << "Welcome, " << login_user << "." << endl;
+                            // cout << "Welcome, " << login_user << "." << endl;
 
                             return 1;
                         }
@@ -193,7 +193,7 @@ int Userpage()
             }
             system("pause");
         }
-        else if (option == 3) //this function is to allow the user to quit the program at the menu.
+        else if (option == 3) // this function is to allow the user to quit the program at the menu.
         {
             cout << "Exiting portal...." << endl;
         }
@@ -242,22 +242,24 @@ int main_menu()
                 return 0;
             }
 
-
             else if (option == 2)
             {
                 bool returnToMainMenu = false;
 
-                while (!returnToMainMenu) {
+                while (!returnToMainMenu)
+                {
                     load_existing_attendance_sheet();
 
                     cout << "\nType 1 to load another file, or 0 to return main menu: " << endl;
                     cin >> choice;
                     cin.ignore(); // Clear buffer
 
-                    if (choice == 0) {
+                    if (choice == 0)
+                    {
                         returnToMainMenu = true;
                     }
-                    else if (choice != 1) {
+                    else if (choice != 1)
+                    {
                         cout << "Invalid option. Please enter 1 or 0." << endl;
                     }
                 }
@@ -266,7 +268,7 @@ int main_menu()
             else if (option == 3)
             {
                 cout << "Logging out..." << endl;
-                system ("UserPage.exe");
+                system("UserPage.exe");
             }
         }
         else
@@ -284,96 +286,96 @@ int create_sheet_structure()
 {
     cout << "\n==============================" << endl;
     cout << "   CREATE ATTENDANCE SHEET   " << endl;
-    cout << "==============================\n" << endl;
+    cout << "==============================\n"
+         << endl;
 
     cout << "Define number of columns (max 10): " << endl;
     cin >> number_of_columns;
     while (cin.fail())
-        {
-            cin.clear();
-            cin.ignore(9999, '\n');
+    {
+        cin.clear();
+        cin.ignore(9999, '\n');
 
-            cout << "Define number of columns (max 10): " << endl;
-            cin >> number_of_columns;
-        }
+        cout << "Define number of columns (max 10): " << endl;
+        cin >> number_of_columns;
+    }
 
     if (number_of_columns <= 10 && number_of_columns > 0)
-        {
-            cin.ignore(9999, '\n'); // Clear the input buffer
+    {
+        cin.ignore(9999, '\n'); // Clear the input buffer
 
-            for (int x = 0; x < number_of_columns; x++) // iterates through the specified number of columns, asks for column name for each one and
-            {                                           // assigs it to an index inside an array according to order
-                string name;
-                int type = 0;
-                cout << "Enter column " << x + 1 << " name: " << endl;
-                getline(cin, name);                   // Use getline to read entire column name with spaces
-                while (name != removeChar(name, ',')) // get input that doesnt have commas
-                {
-                    cin.clear();
-                    cin.ignore(9999, '\n');
-                    cout << "Enter column " << x + 1 << " name (no commas): " << endl;
-                    getline(cin, name);
-                }
+        for (int x = 0; x < number_of_columns; x++) // iterates through the specified number of columns, asks for column name for each one and
+        {                                           // assigs it to an index inside an array according to order
+            string name;
+            int type = 0;
+            cout << "Enter column " << x + 1 << " name: " << endl;
+            getline(cin, name);                   // Use getline to read entire column name with spaces
+            while (name != removeChar(name, ',')) // get input that doesnt have commas
+            {
+                cin.clear();
+                cin.ignore(9999, '\n');
+                cout << "Enter column " << x + 1 << " name (no commas): " << endl;
+                getline(cin, name);
+            }
+            cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
+            cin >> type;
+
+            while (cin.fail() || type < 0 || type > 3)
+            {
+                cin.clear();
+                cin.ignore(9999, '\n');
                 cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
                 cin >> type;
-
-                while (cin.fail())
-                {
-                    cin.clear();
-                    cin.ignore(9999, '\n');
-                    cout << "Enter column " << x + 1 << " data type (type 0 for bool, 1 for string, 2 for float, 3 for int): " << endl;
-                    cin >> type;
-                }
-
-                cin.ignore(9999, '\n'); // Clear the input buffer after reading type
-
-                column_names[x].first = type;
-                column_names[x].second = name, ',';
             }
 
-            *current_table_ptr = current_table("", array_to_vector(column_names, 0 + number_of_columns), {});
+            cin.ignore(9999, '\n'); // Clear the input buffer after reading type
 
-            do
+            column_names[x].first = type;
+            column_names[x].second = name, ',';
+        }
+
+        *current_table_ptr = current_table("", array_to_vector(column_names, 0 + number_of_columns), {});
+
+        do
+        {
+            cout << "Press 1 for a new attendance row, Press 2 to exit attendance rows" << endl;
+            cin >> attendance_row_value;
+            while (cin.fail())
             {
+                cin.clear();
+                cin.ignore(9999, '\n');
                 cout << "Press 1 for a new attendance row, Press 2 to exit attendance rows" << endl;
                 cin >> attendance_row_value;
-                while (cin.fail())
-                {
-                    cin.clear();
-                    cin.ignore(9999, '\n');
-                    cout << "Press 1 for a new attendance row, Press 2 to exit attendance rows" << endl;
-                    cin >> attendance_row_value;
-                }
+            }
 
-                cin.ignore(9999, '\n'); // Clear input buffer
+            cin.ignore(9999, '\n'); // Clear input buffer
 
-                if (attendance_row_value == 1)
-                {
-                    create_attendance_row(current_attendance_row);
-                    current_attendance_row++;
-                }
-                else if (attendance_row_value == 2)
-                {
-                    return 0;
-                }
-                else
-                {
-                    cout << "Invalid option. Please enter 1 or 2." << endl;
-                }
+            if (attendance_row_value == 1)
+            {
+                create_attendance_row(current_attendance_row);
+                current_attendance_row++;
+            }
+            else if (attendance_row_value == 2)
+            {
+                return 0;
+            }
+            else
+            {
+                cout << "Invalid option. Please enter 1 or 2." << endl;
+            }
 
-            } while (attendance_row_value != 2);
+        } while (attendance_row_value != 2);
 
-            return 0;
-        }
+        return 0;
+    }
 
     else
-        {
-            cout << "Number of columns has to be a maximum of 10 and bigger than 0" << endl;
-        }
+    {
+        cout << "Number of columns has to be a maximum of 10 and bigger than 0" << endl;
+    }
 
-return 0;
+    return 0;
 }
-
 
 // the actual attendance row process where data inputted from user gets transferred into the array.
 void create_attendance_row(int current_attendance_row)
@@ -413,11 +415,13 @@ vector<T> array_to_vector(T some_array[], int array_size)
     return temp_vector;
 }
 
-int load_existing_attendance_sheet() {
+int load_existing_attendance_sheet()
+{
     string load_file_path;
     cout << "\n===========================" << endl;
     cout << "   LOAD ATTENDANCE SHEET  " << endl;
-    cout << "===========================\n" << endl;
+    cout << "===========================\n"
+         << endl;
     cout << "Enter existing attendance sheet file path: " << endl;
     cin >> load_file_path;
     if (!check_if_file_exist(load_file_path))
