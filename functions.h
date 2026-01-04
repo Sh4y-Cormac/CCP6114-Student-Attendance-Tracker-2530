@@ -312,7 +312,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
         {
         case Bool:
 
-            if (!(temp == "true" || temp == "false"))
+            if (!(temp == "true" || temp == "false" || temp == "0" || temp == "1"))
             {
 
                 return false;
@@ -320,6 +320,14 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             else
             {
                 data[i] = removeChar(data[i], ' ');
+                if (temp == "0")
+                {
+                    data[i] = "false";
+                }
+                else if (temp == "1")
+                {
+                    data[i] = "true";
+                }
             }
             break;
         case String:
