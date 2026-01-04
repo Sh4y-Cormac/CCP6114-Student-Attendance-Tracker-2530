@@ -1,3 +1,24 @@
+// **************************************
+// Program: main.cpp
+// Course: CCP6114 Programming Fundamentals
+// Lecture Class: TT1L
+// Tutorial Class: TC1L
+// Trimester: 2530
+// Member 1: 252UC241ST | UMAR ZAID BIN AZZADDIN | UMAR.ZAID.AZZADDIN1@student.mmu.edu.my | 012-8228050
+// Member 2: 252UC2421K | Harun bin Ghazari | harun.ghazari@student.mmu.edu.my | 011-26677221
+// Member 3: 252UC2421P | Chan Kar Fung | chan.kar.fung1@student.mmu.edu.my | 01161645742
+// Member 4: 252UC242FD | Ong Jun Ze | ONG.JUN.ZE1@student.mmu.edu.my | 0166080354
+// **************************************
+// Task Distribution
+// Member 1: Implemented sheet structure inputs such as attendance_sheet_name, number_of_columns, column1_name, column2_name, column3_name.
+//           Implemented actual insertations of the attendance rows as well;  Make sure to save all these inside an array for reference for the next person.
+// Member 2: File saving, saves the studentID, gets input for data type for each column. saves Name and Status based on the input from the user into a file or CSV.
+//           A function can be made with parameters and can be put inside the code of member 2 for saving.
+// Member 3: Created a login/signin welcome screen where the lecturer has to sign into her credentials.
+//           Implement basic error handling, include file saving as well for passwords and username.
+// Member 4: Implement a basic directory which main_menu after the original welcome screen, such as “ Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to log out: ”,
+//           Implement basic error handling as well, e.g “ Invalid input. Please enter a number between 1 and 3.” All these functions allow a good layout as a user-friendly interface.
+
 #include <iostream>
 #include <string>
 #include <vector> // resizeable array or inf amount array
@@ -16,7 +37,7 @@ using namespace std;
 //   Int = 3
 
 //};
-int Userpage();  
+int Userpage();
 void displayMainMenu();                     // This function is to handle user sign up and login
 int main_menu();                      // main menu function that handles user input for main menu
 int create_sheet_structure();         // this function handles the sheet structure creation
@@ -43,21 +64,21 @@ int main()
     if (Userpage() == 1)
     {
         string filename = login_user + ".csv";
-        
+
         // Only load if file exists
         if (check_if_file_exist(filename)) {
             *current_table_ptr = current_table(filename);
             current_table_ptr->display();
         }
-        
+
         int menuResult = main_menu();
-        
+
         // If user logged out (returned -1), restart program
         if (menuResult == -1) {
             main();  // Restart
             return 0;
         }
-        
+
         // Only continue with file creation if we're still here
         cout << "Enter sheet name: " << endl;
         getline(cin, new_file_path);

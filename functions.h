@@ -1,3 +1,24 @@
+// **************************************
+// Program: main.cpp
+// Course: CCP6114 Programming Fundamentals
+// Lecture Class: TT1L
+// Tutorial Class: TC1L
+// Trimester: 2530
+// Member 1: 252UC241ST | UMAR ZAID BIN AZZADDIN | UMAR.ZAID.AZZADDIN1@student.mmu.edu.my | 012-8228050
+// Member 2: 252UC2421K | Harun bin Ghazari | harun.ghazari@student.mmu.edu.my | 011-26677221
+// Member 3: 252UC2421P | Chan Kar Fung | chan.kar.fung1@student.mmu.edu.my | 01161645742
+// Member 4: 252UC242FD | Ong Jun Ze | ONG.JUN.ZE1@student.mmu.edu.my | 0166080354
+// **************************************
+// Task Distribution
+// Member 1: Implemented sheet structure inputs such as attendance_sheet_name, number_of_columns, column1_name, column2_name, column3_name.
+//           Implemented actual insertations of the attendance rows as well;  Make sure to save all these inside an array for reference for the next person.
+// Member 2: File saving, saves the studentID, gets input for data type for each column. saves Name and Status based on the input from the user into a file or CSV.
+//           A function can be made with parameters and can be put inside the code of member 2 for saving.
+// Member 3: Created a login/signin welcome screen where the lecturer has to sign into her credentials.
+//           Implement basic error handling, include file saving as well for passwords and username.
+// Member 4: Implement a basic directory which main_menu after the original welcome screen, such as “ Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to log out: ”,
+//           Implement basic error handling as well, e.g “ Invalid input. Please enter a number between 1 and 3.” All these functions allow a good layout as a user-friendly interface.
+
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
