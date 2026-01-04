@@ -240,7 +240,7 @@ void displayMainMenu() {
     cout << "2. Load existing attendance sheet" << endl;
     cout << "3. Logout\n"
          << endl;
-    cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: ";
+    cout << "Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to logout: ";
 }
 
 int main_menu()
