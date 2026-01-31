@@ -22,10 +22,9 @@
 #include <iostream>
 #include <string>
 #include <vector> // resizeable array or inf amount array
-
-#include <vector>
 #include <sstream>
 #include <fstream>
+#include <filesystem> // sole purpose of creating a folder for our database.
 #include "functions.h"
 using namespace std;
 
@@ -43,6 +42,7 @@ int main_menu();                      // main menu function that handles user in
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
 int load_existing_attendance_sheet(); // function to load existing attendance sheet
+void generateSchoolTerm(string);
 
 template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to vectors bcs i fucking love vectors
@@ -57,7 +57,7 @@ vector<string> student_data{};                                          // ALL S
 current_table *const current_table_ptr = new current_table("", {}, {}); // makes empty current table that can be accessed
 
 int option;
-string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass;
+string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass, term_name;
 
 int main()
 {
@@ -261,17 +261,38 @@ void displayMainMenu()
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
     cout << "================================" << endl;
     cout << "HI " << login_user << "! Welcome to main menu." << endl;
+    cout << "Current term being analysed is: " << term_name << endl;
     cout << "\n1. Create new attendance sheet" << endl;
     cout << "2. Load existing attendance sheet" << endl;
-    cout << "3. Logout\n"
-         << endl;
+    cout << "3. Logout\n" << endl;
+
     cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: ";
+}
+
+
+// Creation of the 'database' / defining the selection of term for user
+void generateSchoolTerm(string folderName)
+{
+    if (filesystem::create_directory(folderName))
+    {
+        cout << "Folder created successfully" << endl;
+    }
+    else
+    {
+        cout << "Folder already exists" << endl;
+    }
+    term_name = folderName;
+    system("pause");
 }
 
 int main_menu()
 {
     while (true)
     {
+        string termName;
+        cout << "Before we proceed, please enter the school term you wish to analyse: " << endl;
+        cin >> termName;
+        generateSchoolTerm(termName);
         displayMainMenu();
 
         while (true)
