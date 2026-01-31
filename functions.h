@@ -72,13 +72,8 @@ private:
     {
         fstream dir_file;
         string line;
-<<<<<<< Updated upstream
-        dir_file.open("dir_file.txt", ios::in);
-        while (getline(dir_file, line, '\n'))
-=======
         dir_file.open(curr_db.file_path, ios::in);
         while (getline(dir_file, line, '\n')) // iterates thru all lines in dir_file.txt to find file_path
->>>>>>> Stashed changes
         {
             if (line == file_path)
             {
