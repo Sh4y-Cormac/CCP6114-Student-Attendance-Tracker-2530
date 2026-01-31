@@ -17,6 +17,48 @@ enum types // types of data in table
     Int
 
 };
+class current_db
+{
+public:
+    string file_path;
+
+private:
+    vector<string> content;
+
+public:
+    bool check_if_file_exist(string file_path)
+    {
+        fstream dir_file;
+        string line;
+        dir_file.open("dir_file.txt", ios::in);
+        while (getline(dir_file, line, '\n')) // iterates thru all lines in dir_file.txt to find file_path
+        {
+            if (line == file_path)
+            {
+
+                return true;
+            }
+        }
+        dir_file.close();
+        return false;
+    }
+    current_db(string file_path)
+    {
+        string temp_row;
+        ifstream read_file;
+        if (!check_if_file_exist(file_path))
+        {
+            cout << "This file doesn't exist!";
+            return;
+        }
+        this->file_path = file_path;
+        read_file.open(file_path);
+        while (getline(read_file, temp_row))
+        {
+            this->content.push_back(temp_row);
+        }
+    }
+};
 class current_table // current table class to make object for easier file editing/selection
 {
 public:
@@ -25,12 +67,18 @@ public:
 private:
     vector<pair<int, string>> field_type_list;
     vector<vector<string>> table;
-    bool check_if_file_exist(string file_path)
+
+    bool check_if_file_exist(string file_path, current_db curr_db)
     {
         fstream dir_file;
         string line;
+<<<<<<< Updated upstream
         dir_file.open("dir_file.txt", ios::in);
         while (getline(dir_file, line, '\n'))
+=======
+        dir_file.open(curr_db.file_path, ios::in);
+        while (getline(dir_file, line, '\n')) // iterates thru all lines in dir_file.txt to find file_path
+>>>>>>> Stashed changes
         {
             if (line == file_path)
             {
@@ -49,7 +97,7 @@ public:
         this->field_type_list = field_type_list;
         this->table = table;
     }
-    current_table(string file_path)
+    current_table(string file_path, current_db curr_db)
     {
         string field_line;
         string field;
@@ -57,7 +105,7 @@ public:
 
         ifstream read_file;
 
-        if (!check_if_file_exist(file_path))
+        if (!check_if_file_exist(file_path, curr_db))
         {
             cout << " this file doesn't exist";
             return;
