@@ -1,4 +1,0 @@
-<<<<<<< Updated upstream
-ye.csv
-=======
->>>>>>> Stashed changes
