@@ -264,10 +264,29 @@ int main_menu()
             {
                 if (option == 1)
                 {
-                    create_sheet_structure();
-                    cout << "\nSheet structure process has completed！" << endl;
-                    system("pause");
-                    return 0;
+                    bool returnToMainMenu = false;
+
+                    while (!returnToMainMenu)
+                    {
+                        create_sheet_structure();
+                        cout << "\nSheet structure process has completed! " << endl;
+
+                        cout << "\nType 1 to create another sheet, or 0 to return main menu: " << endl;
+                        cin >> choice;
+                        cin.ignore(); // Clear buffer
+
+                        if (choice == 0)
+                        {
+                            returnToMainMenu = true;
+                            break;  // Exit create loop
+                        }
+                        else if (choice != 1)
+                        {
+                            cout << "Invalid option. Please enter 1 or 0." << endl;
+                            system("pause");
+                        }
+                    }
+                    break;  // Break to outer loop to show menu again
                 }
 
                 else if (option == 2)
