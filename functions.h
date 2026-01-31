@@ -29,6 +29,7 @@
 #include <sstream>
 #include <fstream>
 using namespace std;
+
 // Functions
 enum types // types of data in table
 {

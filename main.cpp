@@ -22,10 +22,9 @@
 #include <iostream>
 #include <string>
 #include <vector> // resizeable array or inf amount array
-
-#include <vector>
 #include <sstream>
 #include <fstream>
+#include <filesystem> // sole purpose of creating a folder for our database.
 #include "functions.h"
 using namespace std;
 
@@ -43,6 +42,7 @@ int main_menu();                      // main menu function that handles user in
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
 int load_existing_attendance_sheet(); // function to load existing attendance sheet
+void generateSchoolTerm(string);
 
 template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to vectors bcs i fucking love vectors
@@ -57,21 +57,12 @@ vector<string> student_data{};                                          // ALL S
 current_table *const current_table_ptr = new current_table("", {}, {}); // makes empty current table that can be accessed
 
 int option;
-string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass;
+string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass, term_name;
 
 int main()
 {
     if (Userpage() == 1)
     {
-        string filename = login_user + ".csv";
-
-        // Only load if file exists
-        if (check_if_file_exist(filename))
-        {
-            *current_table_ptr = current_table(filename);
-            current_table_ptr->display();
-        }
-
         int menuResult = main_menu();
 
         // If user logged out (returned -1), restart program
@@ -80,6 +71,18 @@ int main()
             main(); // Restart
             return 0;
         }
+
+        //string filename = login_user + ".csv";
+        // to save the file path so the path becomes "Term1/username.csv"
+        filesystem::path filename = filesystem::path(term_name) / (login_user + ".csv");
+
+        // Only load if file exists
+        if (check_if_file_exist(filename.string()))
+        {
+            *current_table_ptr = current_table(filename.string());
+            current_table_ptr->display();
+        }
+
 
         // Only continue with file creation if we're still here
         cout << "Enter sheet name: " << endl;
@@ -101,7 +104,11 @@ int main()
             }
         }
 
-        current_table_ptr->file_path = new_file_path;
+        //current_table_ptr->file_path = new_file_path;
+
+        // concatenates the folder and the .csv file into a file path.
+        filesystem::path fullPath = filesystem::path(term_name) / new_file_path;
+        current_table_ptr->file_path = fullPath.string();
 
         // Get the field definitions from column_names array (which was populated in create_sheet_structure)
         vector<pair<int, string>> field_definitions;
@@ -261,17 +268,38 @@ void displayMainMenu()
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
     cout << "================================" << endl;
     cout << "HI " << login_user << "! Welcome to main menu." << endl;
+    cout << "Current term being analysed is: " << term_name << endl;
     cout << "\n1. Create new attendance sheet" << endl;
     cout << "2. Load existing attendance sheet" << endl;
-    cout << "3. Logout\n"
-         << endl;
+    cout << "3. Logout\n" << endl;
+
     cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: ";
+}
+
+
+// Creation of the 'database' / defining the selection of term for user
+void generateSchoolTerm(string folderName)
+{
+    if (filesystem::create_directory(folderName))
+    {
+        cout << "Folder created successfully" << endl;
+    }
+    else
+    {
+        cout << "Folder already exists" << endl;
+    }
+    term_name = folderName;
+    system("pause");
 }
 
 int main_menu()
 {
     while (true)
     {
+        string termName;
+        cout << "Before we proceed, please enter the school term you wish to analyse: " << endl;
+        cin >> termName;
+        generateSchoolTerm(termName);
         displayMainMenu();
 
         while (true)
@@ -499,12 +527,16 @@ int load_existing_attendance_sheet()
          << endl;
     cout << "Enter existing attendance sheet file name with .csv: " << endl;
     cin >> load_file_path;
-    if (!check_if_file_exist(load_file_path))
+
+    filesystem::path fullPath = filesystem::path(term_name) / load_file_path;
+
+    if (!check_if_file_exist(fullPath.string()))
     {
         cout << "\nThis file doesn't exist" << endl;
         return -1;
     }
-    *current_table_ptr = current_table(load_file_path);
+
+    *current_table_ptr = current_table(fullPath.string());
     current_table_ptr->display();
 
     return 0;
