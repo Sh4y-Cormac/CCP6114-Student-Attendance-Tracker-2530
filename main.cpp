@@ -43,7 +43,8 @@ int create_sheet_structure();         // this function handles the sheet structu
 void create_attendance_row(int);      // this function creates the attendance row process
 int load_existing_attendance_sheet(); // function to load existing attendance sheet
 void generateSchoolTerm(string);
-
+void deleting_row();
+void inserting_row();
 template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to vectors bcs i fucking love vectors
 
@@ -72,17 +73,16 @@ int main()
             return 0;
         }
 
-        //string filename = login_user + ".csv";
-        // to save the file path so the path becomes "Term1/username.csv"
+        // string filename = login_user + ".csv";
+        //  to save the file path so the path becomes "Term1/username.csv"
         filesystem::path filename = filesystem::path(term_name) / (login_user + ".csv");
 
         // Only load if file exists
-        if (check_if_file_exist(filename.string()))
+        if (filesystem::exists(filename.string()))
         {
             *current_table_ptr = current_table(filename.string());
             current_table_ptr->display();
         }
-
 
         // Only continue with file creation if we're still here
         cout << "Enter sheet name: " << endl;
@@ -94,7 +94,7 @@ int main()
             new_file_path += ".csv";
         }
 
-        while (check_if_file_exist(new_file_path)) // checks if file exist, if true, then ask for another sheet name
+        while (filesystem::exists(filesystem::path(term_name) / new_file_path)) // checks if file exist, if true, then ask for another sheet name
         {
             cout << "The sheet already exist enter another sheet name: ";
             getline(cin, new_file_path);
@@ -104,7 +104,7 @@ int main()
             }
         }
 
-        //current_table_ptr->file_path = new_file_path;
+        // current_table_ptr->file_path = new_file_path;
 
         // concatenates the folder and the .csv file into a file path.
         filesystem::path fullPath = filesystem::path(term_name) / new_file_path;
@@ -271,11 +271,11 @@ void displayMainMenu()
     cout << "Current term being analysed is: " << term_name << endl;
     cout << "\n1. Create new attendance sheet" << endl;
     cout << "2. Load existing attendance sheet" << endl;
-    cout << "3. Logout\n" << endl;
+    cout << "3. Logout\n"
+         << endl;
 
     cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: ";
 }
-
 
 // Creation of the 'database' / defining the selection of term for user
 void generateSchoolTerm(string folderName)
@@ -521,16 +521,17 @@ vector<T> array_to_vector(T some_array[], int array_size)
 int load_existing_attendance_sheet()
 {
     string load_file_path;
+    int edit_option;
+    bool has_changed = false;
     cout << "\n===========================" << endl;
     cout << "   LOAD ATTENDANCE SHEET  " << endl;
     cout << "===========================\n"
          << endl;
     cout << "Enter existing attendance sheet file name with .csv: " << endl;
     cin >> load_file_path;
-
     filesystem::path fullPath = filesystem::path(term_name) / load_file_path;
 
-    if (!check_if_file_exist(fullPath.string()))
+    if (!filesystem::exists(fullPath.string()))
     {
         cout << "\nThis file doesn't exist" << endl;
         return -1;
@@ -539,5 +540,103 @@ int load_existing_attendance_sheet()
     *current_table_ptr = current_table(fullPath.string());
     current_table_ptr->display();
 
+    while (edit_option != 3)
+    {
+        cout << "Press 1 to insert a new row" << endl
+             << "Press 2 to delete a row" << endl
+             << "Press 3 to exit" << endl;
+        while (!(cin >> edit_option) || edit_option > 3 || edit_option < 1)
+        {
+            cin.clear();
+            cin.ignore(9999, '\n');
+            if (cin.fail())
+            {
+
+                cout << "Please enter a number!" << endl;
+            }
+            else
+            {
+                cout << "Please enter a number between 1 to 3!" << endl;
+            }
+        }
+        if (edit_option == 1)
+        {
+            has_changed = true;
+            inserting_row();
+        }
+        else if (edit_option == 2)
+        {
+            has_changed = true;
+            deleting_row();
+        }
+    }
+    if (has_changed)
+    {
+        saving_file_data(current_table_ptr->get_table(), fullPath.string(), false);
+        //*current_table_ptr = current_table(fullPath.string());
+    }
     return 0;
+}
+
+void inserting_row()
+{
+    int insert_index;
+    current_table_ptr->display(true);
+    cin.clear();
+    cin.ignore(9999, '\n');
+    for (auto i : current_table_ptr->get_field_type_list())
+    {
+        string inputs;
+
+        cout << "Enter " << i.second << ": ";
+        if (i.first == 0)
+        {
+            cout << "(enter true/false)";
+        }
+        getline(cin, inputs); // Use getline to read entire input including spaces
+        // Use getline to read entire column name with spaces
+        while (inputs != removeChar(inputs, ',')) // get input that doesnt have commas
+        {
+            cin.clear();
+            cin.ignore(9999, '\n');
+            cout << "Enter " << i.second << " (no commas): ";
+            getline(cin, inputs);
+        }
+        student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
+    }
+    current_table_ptr->display(true);
+    cout << "insert index : ";
+    while (!(cin >> insert_index) || insert_index > current_table_ptr->get_field_type_list().size() || insert_index < 0)
+    {
+        if (cin.fail())
+        {
+            cout << "Please enter a number!" << endl;
+        }
+        else
+        {
+            cout << "Please enter a number between 0 to the number of columns in the selected sheet!" << endl;
+        }
+    }
+    current_table_ptr->insert_row(insert_index, student_data);
+    current_table_ptr->display();
+    student_data.clear();
+}
+void deleting_row()
+{
+    int delete_index;
+    current_table_ptr->display();
+    cout << "delete index : ";
+    while (!(cin >> delete_index) || delete_index > current_table_ptr->get_field_type_list().size() || delete_index < 0)
+    {
+        if (cin.fail())
+        {
+            cout << "Please enter a number!" << endl;
+        }
+        else
+        {
+            cout << "Please enter a number between 0 to the number of columns in the selected sheet!" << endl;
+        }
+    }
+    current_table_ptr->delete_row(delete_index);
+    current_table_ptr->display();
 }

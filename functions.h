@@ -47,22 +47,6 @@ public:
 private:
     vector<pair<int, string>> field_type_list;
     vector<vector<string>> table;
-    bool check_if_file_exist(string file_path)
-    {
-        fstream dir_file;
-        string line;
-        dir_file.open("dir_file.txt", ios::in);
-        while (getline(dir_file, line, '\n')) // iterates thru all lines in dir_file.txt to find file_path
-        {
-            if (line == file_path)
-            {
-
-                return true;
-            }
-        }
-        dir_file.close();
-        return false;
-    }
 
 public:
     current_table(string file_path, vector<pair<int, string>> field_type_list, vector<vector<string>> table)
@@ -79,7 +63,7 @@ public:
 
         ifstream read_file;
 
-        if (!check_if_file_exist(file_path))
+        if (!filesystem::exists(file_path))
         {
             cout << " this file doesn't exist";
             return;
@@ -113,11 +97,31 @@ public:
             table.push_back(temp_row);
         }
     }
-    void display()
+    void display(bool show_type = false)
     {
         cout << "|";
         for (auto field : field_type_list)
         {
+            if (show_type)
+            {
+                switch (field.first)
+                {
+                case 0:
+                    cout << "(bool)";
+                    break;
+                case 1:
+                    cout << "(string)";
+                    break;
+                case 2:
+                    cout << "(float)";
+                    break;
+                case 3:
+                    cout << "(int)";
+                    break;
+                default:
+                    break;
+                }
+            }
             cout << field.second << "|";
         }
         cout << endl;
@@ -235,28 +239,11 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
     return true;
 }
 
-bool check_if_file_exist(string file_path) // check if file exist in file dirctory
-{
-    fstream dir_file;
-    string line;
-    dir_file.open("dir_file.txt", ios::in);
-    while (getline(dir_file, line, '\n'))
-    {
-        if (line == file_path)
-        {
-
-            return true;
-        }
-    }
-    dir_file.close();
-    return false;
-}
-
 void new_file_create(vector<pair<int, string>> type_list, string file_path) // create new file from fields with specified data types
 {
 
     fstream dir_file;
-    if (check_if_file_exist(file_path))
+    if (filesystem::exists(file_path))
     {
         cout << "this file already exist" << endl;
         return;
@@ -370,7 +357,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
 
 void saving_file_data(vector<vector<string>> rows, string file_path, bool is_append) // save data entered in to file // can append at the end of the file or rewrite the file from first row after fields
 {
-    if (!check_if_file_exist(file_path))
+    if (!filesystem::exists(file_path))
     {
         cout << " this file doesn't exist!" << endl;
         return;
