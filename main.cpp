@@ -539,5 +539,12 @@ int load_existing_attendance_sheet()
     *current_table_ptr = current_table(fullPath.string());
     current_table_ptr->display();
 
+        cout << "\n--------------------------" << endl;
+        cout <<  "COUNT ROWS" << endl;
+        cout << "\n--------------------------" << endl;
+        int totalRows = current_table_ptr->get_table().size(); //this grabs the list in the return the total number of rows in the lsit
+        cout << "Number of rows: " << totalRows << endl;
+        cout << "\n---------------------------" << endl;
+
     return 0;
 }
