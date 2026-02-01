@@ -26,36 +26,31 @@ private:
     vector<string> content;
 
 public:
-    bool check_if_file_exist(string file_path)
-    {
-        fstream dir_file;
-        string line;
-        dir_file.open("dir_file.txt", ios::in);
-        while (getline(dir_file, line, '\n')) // iterates thru all lines in dir_file.txt to find file_path
-        {
-            if (line == file_path)
-            {
-
-                return true;
-            }
-        }
-        dir_file.close();
-        return false;
-    }
     current_db(string file_path)
     {
         string temp_row;
         ifstream read_file;
-        if (!check_if_file_exist(file_path))
+        if (!file_path.empty() && !filesystem::exists("./databases/" + file_path + "/" + file_path + ".csv"))
         {
-            cout << "This file doesn't exist!";
+            cout << "This DB file doesn't exist!" << ("./databases/" + file_path + "/" + file_path + ".csv");
             return;
         }
         this->file_path = file_path;
-        read_file.open(file_path);
+        read_file.open("./databases/" + file_path + "/" + file_path + ".csv");
         while (getline(read_file, temp_row))
         {
             this->content.push_back(temp_row);
+        }
+    }
+    void insert_sheet(int index, string sheet)
+    {
+        content.insert(content.begin() + index, sheet);
+    }
+    void delete_sheet(int index)
+    {
+        if (index < content.size())
+        {
+            content.erase(content.begin() + index);
         }
     }
 };
@@ -67,23 +62,6 @@ public:
 private:
     vector<pair<int, string>> field_type_list;
     vector<vector<string>> table;
-
-    bool check_if_file_exist(string file_path, current_db curr_db)
-    {
-        fstream dir_file;
-        string line;
-        dir_file.open(curr_db.file_path, ios::in);
-        while (getline(dir_file, line, '\n')) // iterates thru all lines in dir_file.txt to find file_path
-        {
-            if (line == file_path)
-            {
-
-                return true;
-            }
-        }
-        dir_file.close();
-        return false;
-    }
 
 public:
     current_table(string file_path, vector<pair<int, string>> field_type_list, vector<vector<string>> table)
@@ -100,13 +78,13 @@ public:
 
         ifstream read_file;
 
-        if (!check_if_file_exist(file_path, curr_db))
+        if (!filesystem::exists("./databases/" + curr_db.file_path + "/sheets/" + file_path))
         {
-            cout << " this file doesn't exist";
+            cout << " this file doesn't exist" << "./databases/" << curr_db.file_path << "/sheets/" << file_path;
             return;
         }
         this->file_path = file_path;
-        read_file.open(file_path);
+        read_file.open("./databases/" + curr_db.file_path + "/sheets/" + file_path);
         getline(read_file, field_line, '\n');
 
         while (getline(stringstream(field_line), field, ','))
@@ -196,13 +174,13 @@ string lowercase(string line) // turn string lowwercase
     return line;
 }
 
-void delete_file(string file_path) // delete file in filepath
+void delete_file(string file_path, current_db curr_db) // delete file in filepath
 {
     fstream dir_file;
     string line;
     vector<string> rewrite;
     bool is_exist = false;
-    dir_file.open("dir_file.txt", ios::in);
+    dir_file.open("./databases/" + curr_db.file_path + "/" + curr_db.file_path + ".csv", ios::in);
     while (getline(dir_file, line))
     {
         if (file_path != line)
@@ -218,8 +196,8 @@ void delete_file(string file_path) // delete file in filepath
 
     if (is_exist)
     {
-        filesystem::remove(file_path);
-        dir_file.open("dir_file.txt", ios::out);
+        filesystem::remove("./databases/" + curr_db.file_path + "/sheets/" + file_path);
+        dir_file.open("./databases/" + curr_db.file_path + "/" + curr_db.file_path + ".csv", ios::out);
         for (string line : rewrite)
         {
             dir_file << line << endl;
@@ -236,7 +214,7 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
 {
     int decimal_point = 0;
     const string alphabet = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+`~";
-    const string numbers = "0123456789";
+    const string numbers = ".0123456789";
 
     for (char i : line)
     {
@@ -260,39 +238,47 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
     return true;
 }
 
-bool check_if_file_exist(string file_path) // check if file exist in file dirctory
+void new_db_create(string file_path)
 {
     fstream dir_file;
-    string line;
-    dir_file.open("dir_file.txt", ios::in);
-    while (getline(dir_file, line, '\n'))
+    if (filesystem::exists("./databases/" + file_path + "/" + file_path + ".csv"))
     {
-        if (line == file_path)
-        {
-
-            return true;
-        }
-    }
-    dir_file.close();
-    return false;
-}
-
-void new_file_create(vector<pair<int, string>> type_list, string file_path) // create new file from fields with specified data types
-{
-
-    fstream dir_file;
-    if (check_if_file_exist(file_path))
-    {
-        cout << "this file already exist" << endl;
+        cout << "this DB file already exist" << endl;
         return;
     }
 
     dir_file.open("dir_file.txt", ios::app);
     dir_file << file_path << endl;
     dir_file.close();
+    try
+    {
+        filesystem::create_directories("./databases/" + file_path + "/sheets");
+    }
+    catch (const filesystem::filesystem_error &e)
+    {
+        cout << "there was an error creating this file!" << endl;
+        return;
+    }
+    ofstream o_current_file;
+    o_current_file.open("./databases/" + file_path + "/" + file_path + ".csv");
+}
+
+void new_file_create(vector<pair<int, string>> type_list, string file_path, current_db &curr_db) // create new file from fields with specified data types
+{
+
+    fstream dir_file;
+    if (filesystem::exists("./databases/" + curr_db.file_path + "/sheets/" + file_path))
+    {
+        cout << "this file already exist" << endl;
+        return;
+    }
+
+    dir_file.open("./databases/" + curr_db.file_path + "/" + curr_db.file_path + ".csv", ios::app);
+    dir_file << file_path << endl;
+    dir_file.close();
 
     ofstream o_current_file;
-    o_current_file.open(file_path);
+    o_current_file.open("./databases/" + curr_db.file_path + "/sheets/" + file_path);
     for (pair i : type_list)
     {
         o_current_file << "{" << i.first << "} " << i.second << ",";
@@ -323,6 +309,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
     }
     if (field_list.size() < data.size())
     {
+
         cout << "data entry scope is out of bounds!" << endl;
         return false;
     }
@@ -381,9 +368,9 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
     return true;
 }
 
-void saving_file_data(vector<vector<string>> row, string file_path, bool is_append) // save data entered in to file // can append at the end of the file or rewrite the file from first row after fields
+void saving_file_data(vector<vector<string>> row, string file_path, bool is_append, current_db curr_db) // save data entered in to file // can append at the end of the file or rewrite the file from first row after fields
 {
-    if (!check_if_file_exist(file_path))
+    if (!filesystem::exists("./databases/" + curr_db.file_path + "/sheets/" + file_path))
     {
         cout << " this file doesn't exist!" << endl;
         return;
@@ -393,7 +380,7 @@ void saving_file_data(vector<vector<string>> row, string file_path, bool is_appe
     vector<vector<string>> ok_rows;
     for (vector<string> data : row)
     {
-        if (type_checker(data, file_path))
+        if (type_checker(data, "./databases/" + curr_db.file_path + "/sheets/" + file_path))
         {
             ok_rows.push_back(data);
         }
@@ -413,16 +400,16 @@ void saving_file_data(vector<vector<string>> row, string file_path, bool is_appe
     if (is_append)
     {
 
-        o_current_file.open(file_path, ios::app);
+        o_current_file.open("./databases/" + curr_db.file_path + "/sheets/" + file_path, ios::app);
     }
     else
     {
         string first_line;
-        o_current_file.open(file_path, ios::in);
+        o_current_file.open("./databases/" + curr_db.file_path + "/sheets/" + file_path, ios::in);
         getline(o_current_file, first_line);
         o_current_file.close();
 
-        o_current_file.open(file_path, ios::out);
+        o_current_file.open("./databases/" + curr_db.file_path + "/sheets/" + file_path, ios::out);
         o_current_file << first_line;
     }
 
@@ -434,6 +421,7 @@ void saving_file_data(vector<vector<string>> row, string file_path, bool is_appe
             o_current_file << i << ",";
         }
     }
+    o_current_file.close();
 }
 
 #endif
