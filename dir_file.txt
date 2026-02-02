@@ -1,4 +1,3 @@
-ye.csv
-FavouriteNums.csv
-scp_list.csvTry.csv
-
+TC1L-Friday.csv
+TC1L.csv
+2530\TC2L.csv

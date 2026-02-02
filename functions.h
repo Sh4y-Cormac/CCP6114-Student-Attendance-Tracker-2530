@@ -1,3 +1,23 @@
+// **************************************
+// Program: main.cpp
+// Course: CCP6114 Programming Fundamentals
+// Lecture Class: TT1L
+// Tutorial Class: TC1L
+// Trimester: 2530
+// Member 1: 252UC241ST | UMAR ZAID BIN AZZADDIN | UMAR.ZAID.AZZADDIN1@student.mmu.edu.my | 012-8228050
+// Member 2: 252UC2421K | Harun bin Ghazari | harun.ghazari@student.mmu.edu.my | 011-26677221
+// Member 3: 252UC2421P | Chan Kar Fung | chan.kar.fung1@student.mmu.edu.my | 01161645742
+// Member 4: 252UC242FD | Ong Jun Ze | ONG.JUN.ZE1@student.mmu.edu.my | 0166080354
+// **************************************
+// Task Distribution
+// Member 1: Implemented sheet structure inputs such as attendance_sheet_name, number_of_columns, column1_name, column2_name, column3_name.
+//           Implemented actual insertations of the attendance rows as well;  Make sure to save all these inside an array for reference for the next person.
+// Member 2: File saving, saves the studentID, gets input for data type for each column. saves Name and Status based on the input from the user into a file or CSV.
+//           A function can be made with parameters and can be put inside the code of member 2 for saving.
+// Member 3: Created a login/signin welcome screen where the lecturer has to sign into her credentials.
+//           Implement basic error handling, include file saving as well for passwords and username.
+// Member 4: Implement a basic directory which main_menu after the original welcome screen, such as � Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to log out: �,
+//           Implement basic error handling as well, e.g � Invalid input. Please enter a number between 1 and 3.� All these functions allow a good layout as a user-friendly interface.
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
@@ -9,6 +29,7 @@
 #include <sstream>
 #include <fstream>
 using namespace std;
+
 // Functions
 enum types // types of data in table
 {
@@ -26,22 +47,6 @@ public:
 private:
     vector<pair<int, string>> field_type_list;
     vector<vector<string>> table;
-    bool check_if_file_exist(string file_path)
-    {
-        fstream dir_file;
-        string line;
-        dir_file.open("dir_file.txt", ios::in);
-        while (getline(dir_file, line, '\n')) // iterates thru all lines in dir_file.txt to find file_path
-        {
-            if (line == file_path)
-            {
-
-                return true;
-            }
-        }
-        dir_file.close();
-        return false;
-    }
 
 public:
     current_table(string file_path, vector<pair<int, string>> field_type_list, vector<vector<string>> table)
@@ -58,7 +63,7 @@ public:
 
         ifstream read_file;
 
-        if (!check_if_file_exist(file_path))
+        if (!filesystem::exists(file_path))
         {
             cout << " this file doesn't exist";
             return;
@@ -92,11 +97,31 @@ public:
             table.push_back(temp_row);
         }
     }
-    void display()
+    void display(bool show_type = false)
     {
         cout << "|";
         for (auto field : field_type_list)
         {
+            if (show_type)
+            {
+                switch (field.first)
+                {
+                case 0:
+                    cout << "(bool)";
+                    break;
+                case 1:
+                    cout << "(string)";
+                    break;
+                case 2:
+                    cout << "(float)";
+                    break;
+                case 3:
+                    cout << "(int)";
+                    break;
+                default:
+                    break;
+                }
+            }
             cout << field.second << "|";
         }
         cout << endl;
@@ -197,7 +222,7 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
 {
     int decimal_point = 0;
     const string alphabet = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+`~{}";
-    const string numbers = "0123456789";
+    const string numbers = "0123456789..";
 
     for (char i : line)
     {
@@ -207,34 +232,18 @@ bool num_check(string line, bool is_float) // check if data is a number (int or 
         }
         if ((alphabet.find(i) != string::npos) || (numbers.find(i) == string::npos) || (decimal_point > 0 && !is_float) || (decimal_point > 1 && is_float))
         {
+
             return false;
         }
     }
     return true;
 }
 
-bool check_if_file_exist(string file_path) // check if file exist in file dirctory
-{
-    fstream dir_file;
-    string line;
-    dir_file.open("dir_file.txt", ios::in);
-    while (getline(dir_file, line, '\n'))
-    {
-        if (line == file_path)
-        {
-
-            return true;
-        }
-    }
-    dir_file.close();
-    return false;
-}
-
 void new_file_create(vector<pair<int, string>> type_list, string file_path) // create new file from fields with specified data types
 {
 
     fstream dir_file;
-    if (check_if_file_exist(file_path))
+    if (filesystem::exists(file_path))
     {
         cout << "this file already exist" << endl;
         return;
@@ -285,24 +294,32 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
     }
     for (int i = 0; i < field_list.size(); i++)
     {
-        string temp = lowercase(removeChar(data[i]));
+        string temp = lowercase(removeChar(data[i], ' '));
 
         switch (field_list[i])
         {
         case Bool:
 
-            if (!(temp == "true" || temp == "false"))
+            if (!(temp == "true" || temp == "false" || temp == "0" || temp == "1"))
             {
 
                 return false;
             }
             else
             {
-                data[i] = removeChar(data[i]);
+                data[i] = removeChar(data[i], ' ');
+                if (temp == "0")
+                {
+                    data[i] = "false";
+                }
+                else if (temp == "1")
+                {
+                    data[i] = "true";
+                }
             }
             break;
         case String:
-            if (((!temp.empty() && temp.size() > 1)))
+            if ((temp.empty()))
             {
                 return false;
             }
@@ -315,7 +332,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             }
             else
             {
-                data[i] = to_string(stof(removeChar(data[i])));
+                data[i] = to_string(stof(removeChar(data[i], ' ')));
             }
             break;
         case Int:
@@ -327,7 +344,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
             else
             {
 
-                data[i] = to_string(stoi(removeChar(data[i])));
+                data[i] = to_string(stoi(removeChar(data[i], ' ')));
             }
             break;
         default:
@@ -340,7 +357,7 @@ bool type_checker(vector<string> &data, string file_path) // check if data types
 
 void saving_file_data(vector<vector<string>> rows, string file_path, bool is_append) // save data entered in to file // can append at the end of the file or rewrite the file from first row after fields
 {
-    if (!check_if_file_exist(file_path))
+    if (!filesystem::exists(file_path))
     {
         cout << " this file doesn't exist!" << endl;
         return;

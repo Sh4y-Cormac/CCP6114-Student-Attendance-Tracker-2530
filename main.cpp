@@ -1,10 +1,30 @@
+// **************************************
+// Program: main.cpp
+// Course: CCP6114 Programming Fundamentals
+// Lecture Class: TT1L
+// Tutorial Class: TC1L
+// Trimester: 2530
+// Member 1: 252UC241ST | UMAR ZAID BIN AZZADDIN | UMAR.ZAID.AZZADDIN1@student.mmu.edu.my | 012-8228050
+// Member 2: 252UC2421K | Harun bin Ghazari | harun.ghazari@student.mmu.edu.my | 011-26677221
+// Member 3: 252UC2421P | Chan Kar Fung | chan.kar.fung1@student.mmu.edu.my | 01161645742
+// Member 4: 252UC242FD | Ong Jun Ze | ONG.JUN.ZE1@student.mmu.edu.my | 0166080354
+// **************************************
+// Task Distribution
+// Member 1: Implemented sheet structure inputs such as attendance_sheet_name, number_of_columns, column1_name, column2_name, column3_name.
+//           Implemented actual insertations of the attendance rows as well;  Make sure to save all these inside an array for reference for the next person.
+// Member 2: File saving, saves the studentID, gets input for data type for each column. saves Name and Status based on the input from the user into a file or CSV.
+//           A function can be made with parameters and can be put inside the code of member 2 for saving.
+// Member 3: Created a login/signin welcome screen where the lecturer has to sign into her credentials.
+//           Implement basic error handling, include file saving as well for passwords and username.
+// Member 4: Implement a basic directory which main_menu after the original welcome screen, such as “ Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to log out: ”,
+//           Implement basic error handling as well, e.g “ Invalid input. Please enter a number between 1 and 3.” All these functions allow a good layout as a user-friendly interface.
+
 #include <iostream>
 #include <string>
 #include <vector> // resizeable array or inf amount array
-
-#include <vector>
 #include <sstream>
 #include <fstream>
+#include <filesystem> // sole purpose of creating a folder for our database.
 #include "functions.h"
 using namespace std;
 
@@ -16,13 +36,16 @@ using namespace std;
 //   Int = 3
 
 //};
-int Userpage();  
-void displayMainMenu();                     // This function is to handle user sign up and login
+int Userpage(); // This function is to handle user sign up and login
+void displayMainMenu();
 int main_menu();                      // main menu function that handles user input for main menu
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
 int load_existing_attendance_sheet(); // function to load existing attendance sheet
-
+void generateSchoolTerm(string);
+void deleting_row();
+void inserting_row(int);
+void update_row();
 template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to vectors bcs i fucking love vectors
 
@@ -36,28 +59,32 @@ vector<string> student_data{};                                          // ALL S
 current_table *const current_table_ptr = new current_table("", {}, {}); // makes empty current table that can be accessed
 
 int option;
-string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass;
+string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass, term_name;
 
 int main()
 {
     if (Userpage() == 1)
     {
-        string filename = login_user + ".csv";
-        
-        // Only load if file exists
-        if (check_if_file_exist(filename)) {
-            *current_table_ptr = current_table(filename);
-            current_table_ptr->display();
-        }
-        
         int menuResult = main_menu();
-        
+
         // If user logged out (returned -1), restart program
-        if (menuResult == -1) {
-            main();  // Restart
+        if (menuResult == -1)
+        {
+            main(); // Restart
             return 0;
         }
-        
+
+        // string filename = login_user + ".csv";
+        //  to save the file path so the path becomes "Term1/username.csv"
+        filesystem::path filename = filesystem::path(term_name) / (login_user + ".csv");
+
+        // Only load if file exists
+        if (filesystem::exists(filename.string()))
+        {
+            *current_table_ptr = current_table(filename.string());
+            current_table_ptr->display();
+        }
+
         // Only continue with file creation if we're still here
         cout << "Enter sheet name: " << endl;
         getline(cin, new_file_path);
@@ -68,7 +95,7 @@ int main()
             new_file_path += ".csv";
         }
 
-        while (check_if_file_exist(new_file_path)) // checks if file exist, if true, then ask for another sheet name
+        while (filesystem::exists(filesystem::path(term_name) / new_file_path)) // checks if file exist, if true, then ask for another sheet name
         {
             cout << "The sheet already exist enter another sheet name: ";
             getline(cin, new_file_path);
@@ -78,16 +105,21 @@ int main()
             }
         }
 
-        current_table_ptr->file_path = new_file_path;
+        // current_table_ptr->file_path = new_file_path;
+
+        // concatenates the folder and the .csv file into a file path.
+        filesystem::path fullPath = filesystem::path(term_name) / new_file_path;
+        current_table_ptr->file_path = fullPath.string();
 
         // Get the field definitions from column_names array (which was populated in create_sheet_structure)
         vector<pair<int, string>> field_definitions;
 
-        for (int i = 0; i < number_of_columns; i++) {
+        for (int i = 0; i < number_of_columns; i++)
+        {
             field_definitions.push_back(column_names[i]);
         }
 
-        new_file_create(field_definitions, current_table_ptr->file_path);  // creating the file
+        new_file_create(field_definitions, current_table_ptr->file_path); // creating the file
 
         saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
 
@@ -230,23 +262,49 @@ int Userpage()
 }
 //*******************************************************************************************
 
-void displayMainMenu() {
+void displayMainMenu()
+{
     system("cls");
     cout << "\n================================" << endl;
     cout << "   STUDENT ATTENDANCE TRACKER  " << endl;
     cout << "================================" << endl;
     cout << "HI " << login_user << "! Welcome to main menu." << endl;
+    cout << "Current term being analysed is: " << term_name << endl;
     cout << "\n1. Create new attendance sheet" << endl;
     cout << "2. Load existing attendance sheet" << endl;
     cout << "3. Logout\n"
          << endl;
+<<<<<<< HEAD
     cout << "Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to logout: ";
+=======
+
+    cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: ";
+>>>>>>> 1aed091f6e539dd763730506feacc904097a0e86
+}
+
+// Creation of the 'database' / defining the selection of term for user
+void generateSchoolTerm(string folderName)
+{
+    if (filesystem::create_directory(folderName))
+    {
+        cout << "Folder created successfully" << endl;
+    }
+    else
+    {
+        cout << "Folder already exists" << endl;
+    }
+    term_name = folderName;
+    system("pause");
 }
 
 int main_menu()
 {
     while (true)
     {
+        string termName;
+        cout << "Before we proceed, please enter the school term you wish to analyse: " << endl;
+        cin >> termName;
+        generateSchoolTerm(termName);
         displayMainMenu();
 
         while (true)
@@ -257,7 +315,7 @@ int main_menu()
                 cin.ignore(9999, '\n');
                 cout << "Invalid input. Please enter a number between 1 and 3." << endl;
                 system("pause");
-                break;  // Break to show menu again
+                break; // Break to show menu again
             }
 
             if (option >= 1 && option <= 3)
@@ -304,7 +362,7 @@ int main_menu()
                         if (choice == 0)
                         {
                             returnToMainMenu = true;
-                            break;  // Exit load loop
+                            break; // Exit load loop
                         }
                         else if (choice != 1)
                         {
@@ -312,22 +370,22 @@ int main_menu()
                             system("pause");
                         }
                     }
-                    break;  // Break to outer loop to show menu again
+                    break; // Break to outer loop to show menu again
                 }
 
                 else if (option == 3)
                 {
                     cout << "Logging out..." << endl;
                     system("pause");
-                    Userpage();  // Go back to login
-                    return -1;   // Indicate logout
+                    Userpage(); // Go back to login
+                    return -1;  // Indicate logout
                 }
             }
             else
             {
                 cout << "Invalid input. Please enter a number between 1 and 3." << endl;
                 system("pause");
-                break;  // Break to show menu again
+                break; // Break to show menu again
             }
         }
     }
@@ -451,7 +509,12 @@ void create_attendance_row(int current_attendance_row)
     for (int x = 0; x < number_of_columns; x++)
     {
         string inputs;
+
         cout << "Enter " << column_names[x].second << ": ";
+        if (column_names[x].first == 0)
+        {
+            cout << "(enter true/false)";
+        }
         getline(cin, inputs); // Use getline to read entire input including spaces
         // Use getline to read entire column name with spaces
         while (inputs != removeChar(inputs, ',')) // get input that doesnt have commas
@@ -482,19 +545,186 @@ vector<T> array_to_vector(T some_array[], int array_size)
 int load_existing_attendance_sheet()
 {
     string load_file_path;
+    int edit_option;
+    bool has_changed = false;
     cout << "\n===========================" << endl;
     cout << "   LOAD ATTENDANCE SHEET  " << endl;
     cout << "===========================\n"
          << endl;
-    cout << "Enter existing attendance sheet file path: " << endl;
+    cout << "Enter existing attendance sheet file name with .csv: " << endl;
     cin >> load_file_path;
-    if (!check_if_file_exist(load_file_path))
+    filesystem::path fullPath = filesystem::path(term_name) / load_file_path;
+
+    if (!filesystem::exists(fullPath.string()))
     {
         cout << "\nThis file doesn't exist" << endl;
         return -1;
     }
-    *current_table_ptr = current_table(load_file_path);
+
+    *current_table_ptr = current_table(fullPath.string());
     current_table_ptr->display();
 
+    cout << "\n--------------------------" << endl;
+    cout << "COUNT ROWS" << endl;
+    cout << "\n--------------------------" << endl;
+    int totalRows = current_table_ptr->get_table().size(); // this grabs the list in the return the total number of rows in the lsit
+    cout << "Number of rows: " << totalRows << endl;
+    cout << "\n---------------------------" << endl;
+
+    while (edit_option != 4)
+    {
+        cout << "Press 1 to insert a new row" << endl
+             << "Press 2 to delete a row" << endl
+             << "Press 3 to update a row" << endl
+             << "Press 4 to exit" << endl;
+        while (!(cin >> edit_option) || edit_option > 4 || edit_option < 1)
+        {
+            cin.clear();
+            cin.ignore(9999, '\n');
+            if (cin.fail())
+            {
+
+                cout << "Please enter a number!" << endl;
+            }
+            else
+            {
+                cout << "Please enter a number between 1 to 4!" << endl;
+            }
+        }
+        if (edit_option == 1)
+        {
+            has_changed = true;
+            inserting_row(-1);
+        }
+        else if (edit_option == 2)
+        {
+            has_changed = true;
+            deleting_row();
+        }
+        else if (edit_option == 3)
+        {
+            has_changed = true;
+            update_row();
+        }
+    }
+    if (has_changed)
+    {
+        saving_file_data(current_table_ptr->get_table(), fullPath.string(), false);
+        //*current_table_ptr = current_table(fullPath.string());
+    }
     return 0;
+}
+
+void inserting_row(int insert_pos = -1)
+{
+    int insert_index;
+    current_table_ptr->display(true);
+    cin.clear();
+    cin.ignore(9999, '\n');
+    for (auto i : current_table_ptr->get_field_type_list())
+    {
+        string inputs;
+
+        cout << "Enter " << i.second << ": ";
+        if (i.first == 0)
+        {
+            cout << "(enter true/false)";
+        }
+        getline(cin, inputs); // Use getline to read entire input including spaces
+        // Use getline to read entire column name with spaces
+        while (inputs != removeChar(inputs, ',')) // get input that doesnt have commas
+        {
+            cin.clear();
+            cin.ignore(9999, '\n');
+            cout << "Enter " << i.second << " (no commas): ";
+            getline(cin, inputs);
+        }
+        student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
+    }
+    cout << endl
+         << endl;
+    current_table_ptr->display(true);
+    if (insert_pos == -1)
+    {
+        cout << "insert index : ";
+        while (!(cin >> insert_index) || insert_index > current_table_ptr->get_field_type_list().size() || insert_index < 0)
+        {
+            if (cin.fail())
+            {
+                cout << "Please enter a number!" << endl;
+            }
+            else
+            {
+                cout << "Please enter a number between 0 to the number of columns in the selected sheet!" << endl;
+            }
+        }
+    }
+    else
+    {
+        insert_index = insert_pos;
+    }
+    current_table_ptr->insert_row(insert_index, student_data);
+    cout << endl
+         << endl;
+    current_table_ptr->display();
+    student_data.clear();
+}
+void deleting_row()
+{
+    string delete_id;
+    int position = 0;
+    current_table_ptr->display();
+    cout << "Delete a row by the ID: ";
+    while (!(cin >> delete_id) || delete_id.empty())
+    {
+
+        cin.clear();
+        cin.ignore(9999, '\n');
+        cout << "Please enter a valid ID!" << endl;
+    }
+    for (vector<string> row : current_table_ptr->get_table())
+    {
+        if (row[0] == delete_id)
+        {
+            current_table_ptr->delete_row(position);
+            cout << endl
+                 << endl;
+            current_table_ptr->display();
+            return;
+        }
+        position++;
+    }
+    cin.clear();
+    cin.ignore(9999, '\n');
+    cout << "Please enter a valid ID!" << endl;
+    //
+}
+
+void update_row()
+{
+    string update_id;
+    int position = 0;
+    current_table_ptr->display();
+    cout << "Update a row by the ID: ";
+    while (!(cin >> update_id) || update_id.empty())
+    {
+
+        cin.clear();
+        cin.ignore(9999, '\n');
+        cout << "Please enter a valid ID!" << endl;
+    }
+    for (vector<string> row : current_table_ptr->get_table())
+    {
+        if (row[0] == update_id)
+        {
+            current_table_ptr->delete_row(position);
+            inserting_row(position);
+            return;
+        }
+        position++;
+    }
+    cin.clear();
+    cin.ignore(9999, '\n');
+    cout << "Please enter a valid ID!" << endl;
+    //
 }
