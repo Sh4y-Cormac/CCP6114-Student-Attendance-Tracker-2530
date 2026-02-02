@@ -274,12 +274,7 @@ void displayMainMenu()
     cout << "2. Load existing attendance sheet" << endl;
     cout << "3. Logout\n"
          << endl;
-<<<<<<< HEAD
     cout << "Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to logout: ";
-=======
-
-    cout << "Type 1 to create new attendance sheet, 2 to load existing attendance sheet or 3 to logout: ";
->>>>>>> 1aed091f6e539dd763730506feacc904097a0e86
 }
 
 // Creation of the 'database' / defining the selection of term for user
