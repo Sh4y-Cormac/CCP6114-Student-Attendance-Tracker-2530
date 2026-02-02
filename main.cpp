@@ -44,7 +44,8 @@ void create_attendance_row(int);      // this function creates the attendance ro
 int load_existing_attendance_sheet(); // function to load existing attendance sheet
 void generateSchoolTerm(string);
 void deleting_row();
-void inserting_row();
+void inserting_row(int);
+void update_row();
 template <typename T>
 vector<T> array_to_vector(T some_array[], int array_size); // changes arrays to vectors bcs i fucking love vectors
 
@@ -547,12 +548,13 @@ int load_existing_attendance_sheet()
     cout << "Number of rows: " << totalRows << endl;
     cout << "\n---------------------------" << endl;
 
-    while (edit_option != 3)
+    while (edit_option != 4)
     {
         cout << "Press 1 to insert a new row" << endl
              << "Press 2 to delete a row" << endl
-             << "Press 3 to exit" << endl;
-        while (!(cin >> edit_option) || edit_option > 3 || edit_option < 1)
+             << "Press 3 to update a row" << endl
+             << "Press 4 to exit" << endl;
+        while (!(cin >> edit_option) || edit_option > 4 || edit_option < 1)
         {
             cin.clear();
             cin.ignore(9999, '\n');
@@ -563,18 +565,23 @@ int load_existing_attendance_sheet()
             }
             else
             {
-                cout << "Please enter a number between 1 to 3!" << endl;
+                cout << "Please enter a number between 1 to 4!" << endl;
             }
         }
         if (edit_option == 1)
         {
             has_changed = true;
-            inserting_row();
+            inserting_row(-1);
         }
         else if (edit_option == 2)
         {
             has_changed = true;
             deleting_row();
+        }
+        else if (edit_option == 3)
+        {
+            has_changed = true;
+            update_row();
         }
     }
     if (has_changed)
@@ -585,7 +592,7 @@ int load_existing_attendance_sheet()
     return 0;
 }
 
-void inserting_row()
+void inserting_row(int insert_pos = -1)
 {
     int insert_index;
     current_table_ptr->display(true);
@@ -611,39 +618,90 @@ void inserting_row()
         }
         student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
     }
+    cout << endl
+         << endl;
     current_table_ptr->display(true);
-    cout << "insert index : ";
-    while (!(cin >> insert_index) || insert_index > current_table_ptr->get_field_type_list().size() || insert_index < 0)
+    if (insert_pos == -1)
     {
-        if (cin.fail())
+        cout << "insert index : ";
+        while (!(cin >> insert_index) || insert_index > current_table_ptr->get_field_type_list().size() || insert_index < 0)
         {
-            cout << "Please enter a number!" << endl;
-        }
-        else
-        {
-            cout << "Please enter a number between 0 to the number of columns in the selected sheet!" << endl;
+            if (cin.fail())
+            {
+                cout << "Please enter a number!" << endl;
+            }
+            else
+            {
+                cout << "Please enter a number between 0 to the number of columns in the selected sheet!" << endl;
+            }
         }
     }
+    else
+    {
+        insert_index = insert_pos;
+    }
     current_table_ptr->insert_row(insert_index, student_data);
+    cout << endl
+         << endl;
     current_table_ptr->display();
     student_data.clear();
 }
 void deleting_row()
 {
-    int delete_index;
+    string delete_id;
+    int position = 0;
     current_table_ptr->display();
-    cout << "delete index : ";
-    while (!(cin >> delete_index) || delete_index > current_table_ptr->get_field_type_list().size() || delete_index < 0)
+    cout << "Delete a row by the ID: ";
+    while (!(cin >> delete_id) || delete_id.empty())
     {
-        if (cin.fail())
-        {
-            cout << "Please enter a number!" << endl;
-        }
-        else
-        {
-            cout << "Please enter a number between 0 to the number of columns in the selected sheet!" << endl;
-        }
+
+        cin.clear();
+        cin.ignore(9999, '\n');
+        cout << "Please enter a valid ID!" << endl;
     }
-    current_table_ptr->delete_row(delete_index);
+    for (vector<string> row : current_table_ptr->get_table())
+    {
+        if (row[0] == delete_id)
+        {
+            current_table_ptr->delete_row(position);
+            cout << endl
+                 << endl;
+            current_table_ptr->display();
+            return;
+        }
+        position++;
+    }
+    cin.clear();
+    cin.ignore(9999, '\n');
+    cout << "Please enter a valid ID!" << endl;
+    //
+}
+
+void update_row()
+{
+    string update_id;
+    int position = 0;
     current_table_ptr->display();
+    cout << "Update a row by the ID: ";
+    while (!(cin >> update_id) || update_id.empty())
+    {
+
+        cin.clear();
+        cin.ignore(9999, '\n');
+        cout << "Please enter a valid ID!" << endl;
+    }
+    for (vector<string> row : current_table_ptr->get_table())
+    {
+        if (row[0] == update_id)
+        {
+            current_table_ptr->delete_row(position);
+            inserting_row(position);
+            return;
+        }
+        position++;
+    }
+    cin.clear();
+    cin.ignore(9999, '\n');
+    cout << "Please enter a valid ID!" << endl;
+    //
 }
