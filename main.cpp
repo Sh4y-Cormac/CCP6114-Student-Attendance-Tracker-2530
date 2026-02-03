@@ -592,7 +592,7 @@ int load_existing_attendance_sheet()
     return 0;
 }
 
-void inserting_row(int insert_pos = -1)
+void inserting_row(int insert_pos = -1) // will ask for input if parameter is -1
 {
     int insert_index;
     current_table_ptr->display(true);
@@ -618,10 +618,11 @@ void inserting_row(int insert_pos = -1)
         }
         student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
     }
+    student_data.clear();
     cout << endl
          << endl;
     current_table_ptr->display(true);
-    if (insert_pos == -1)
+    if (insert_pos == -1) // will ask for input if parameter is -1
     {
         cout << "insert index : ";
         while (!(cin >> insert_index) || insert_index > current_table_ptr->get_field_type_list().size() || insert_index < 0)
