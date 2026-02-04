@@ -46,7 +46,7 @@ int main_menu();                      // main menu function that handles user in
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
 int load_existing_attendance_sheet(); // function to load existing attendance sheet
-void generateSchoolTerm(string);
+void generateSchoolTerm(string); // function serves to create a new folder/load a preexisting one.
 void deleting_row();
 void inserting_row(int);
 void update_row();
@@ -296,9 +296,10 @@ int main_menu()
 
                         // string filename = login_user + ".csv";
                         //  to save the file path so the path becomes "Term1/username.csv"
+                        // '/' is used to indicate that (login_user + ".csv") is appended to the folder we created.
                         filesystem::path filename = filesystem::path(term_name) / (login_user + ".csv");
 
-                        // Only load if file exists
+                        // Only load if file exists, uses the file path as argument
                         if (filesystem::exists(filename.string()))
                         {
                             *current_table_ptr = current_table(filename.string());
