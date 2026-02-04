@@ -68,13 +68,13 @@ string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass, ter
 int main()
 {
     bool running = true;
-    
+
     while (running)
     {
         if (Userpage() == 1)
         {
             int menuResult = main_menu();
-            
+
             if (menuResult == -1)
             {
                 // Logout - just continue the loop to show login page again
@@ -94,7 +94,7 @@ int main()
             running = false;
         }
     }
-    
+
     cout << "Exiting program..." << endl;
     return 0;
 }
@@ -344,11 +344,11 @@ int main_menu()
 
                         saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
 
-                            saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
+                        saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
 
-                            *current_table_ptr = current_table(current_table_ptr->file_path);
-                            current_table_ptr->display();
-                            //delete current_table_ptr; // Free allocated memory
+                        *current_table_ptr = current_table(current_table_ptr->file_path);
+                        current_table_ptr->display();
+                        // delete current_table_ptr; // Free allocated memory
 
                         cout << "\nType 1 to create another sheet, or 0 to return main menu: " << endl;
                         cin >> choice;
@@ -423,7 +423,6 @@ int create_sheet_structure()
     cout << "==============================\n"
          << endl;
 
-
     do
     {
         cout << "Define number of columns (max 10): " << endl;
@@ -441,9 +440,7 @@ int create_sheet_structure()
             cout << "Number of columns has to be between 1 and 10." << endl;
         }
 
-    }while (number_of_columns <= 0 || number_of_columns > 10);
-
-
+    } while (number_of_columns <= 0 || number_of_columns > 10);
 
     if (number_of_columns <= 10 && number_of_columns > 0)
     {
@@ -526,7 +523,6 @@ int create_sheet_structure()
     else
     {
         cout << "Number of columns has to be a maximum of 10 and bigger than 0" << endl;
-
     }
 
     return 0;
@@ -551,12 +547,22 @@ void create_attendance_row(int current_attendance_row)
 
         getline(cin, inputs); // Use getline to read entire input including spaces
         // Use getline to read entire column name with spaces
-        while (inputs != removeChar(inputs, ',')) // get input that doesnt have commas
+        while (inputs != removeChar(inputs, ',') || !single_type_check(static_cast<types>(column_names[x].first), inputs)) // get input that doesnt have commas
         {
-            cin.clear();
-            cin.ignore(9999, '\n');
-            cout << "Enter " << column_names[x].second << " (no commas): ";
-            getline(cin, inputs);
+            if (inputs != removeChar(inputs, ','))
+            {
+                cin.clear();
+                cin.ignore(9999, '\n');
+                cout << "Enter " << column_names[x].second << " (no commas): ";
+                getline(cin, inputs);
+            }
+            else
+            {
+                cin.clear();
+                cin.ignore(9999, '\n');
+                cout << "Enter " << column_names[x].second << ": ";
+                getline(cin, inputs);
+            }
         }
         student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
     }
@@ -664,9 +670,9 @@ void inserting_row(int insert_pos = -1)
         {
             cout << "(enter true/false)";
         }
-        getline(cin, inputs); // Use getline to read entire input including spaces
-        // Use getline to read entire column name with spaces
-        while (inputs != removeChar(inputs, ',')) // get input that doesnt have commas
+        getline(cin, inputs);                                                                                // Use getline to read entire input including spaces
+                                                                                                             // Use getline to read entire column name with spaces
+        while (inputs != removeChar(inputs, ',') || !single_type_check(static_cast<types>(i.first), inputs)) // gets inputs with no commas and with correcct type
         {
             cin.clear();
             cin.ignore(9999, '\n');

@@ -262,6 +262,68 @@ void new_file_create(vector<pair<int, string>> type_list, string file_path) // c
     o_current_file.close();
 }
 
+bool single_type_check(types data_type, string &data)
+{
+    string temp = lowercase(removeChar(data, ' '));
+
+    switch (data_type)
+    {
+    case Bool:
+
+        if (!(temp == "true" || temp == "false" || temp == "0" || temp == "1"))
+        {
+            cout << "entered input is not bool type, which should be for this column." << endl;
+            return false;
+        }
+        else
+        {
+            data = removeChar(data, ' ');
+            if (temp == "0")
+            {
+                data = "false";
+            }
+            else if (temp == "1")
+            {
+                data = "true";
+            }
+        }
+        break;
+    case String:
+        if ((temp.empty()))
+        {
+            cout << "entered input is empty, which should not be for this column." << endl;
+            return false;
+        }
+
+        break;
+    case Float:
+        if (!(!temp.empty() && num_check(temp, true)))
+        {
+            cout << "entered input is not float type, which should be for this column." << endl;
+            return false;
+        }
+        else
+        {
+            data = to_string(stof(removeChar(data, ' ')));
+        }
+        break;
+    case Int:
+        if (!(!temp.empty() && num_check(temp, false)))
+        {
+            cout << "entered input is not integer type, which should be for this column." << endl;
+            return false;
+        }
+        else
+        {
+
+            data = to_string(stoi(removeChar(data, ' ')));
+        }
+        break;
+    default:
+        break;
+    }
+    return true;
+}
 bool type_checker(vector<string> &data, string file_path) // check if data types align with fields
 {
     ifstream file;
