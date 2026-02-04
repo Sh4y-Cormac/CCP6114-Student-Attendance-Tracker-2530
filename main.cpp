@@ -400,16 +400,27 @@ int create_sheet_structure()
     cout << "==============================\n"
          << endl;
 
-    cout << "Define number of columns (max 10): " << endl;
-    cin >> number_of_columns;
-    while (cin.fail())
-    {
-        cin.clear();
-        cin.ignore(9999, '\n');
 
+    do
+    {
         cout << "Define number of columns (max 10): " << endl;
         cin >> number_of_columns;
-    }
+
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(9999, '\n');
+            number_of_columns = -1; // force retry
+        }
+
+        if (number_of_columns <= 0 || number_of_columns > 10)
+        {
+            cout << "Number of columns has to be between 1 and 10." << endl;
+        }
+
+    }while (number_of_columns <= 0 || number_of_columns > 10);
+
+
 
     if (number_of_columns <= 10 && number_of_columns > 0)
     {
@@ -492,6 +503,7 @@ int create_sheet_structure()
     else
     {
         cout << "Number of columns has to be a maximum of 10 and bigger than 0" << endl;
+
     }
 
     return 0;
@@ -714,7 +726,7 @@ void update_row()
         cin.ignore(9999, '\n');
         cout << "Please enter a valid ID!" << endl;
     }
-    
+
     for (vector<string> row : current_table_ptr->get_table())
     {
         if (row[0] == update_id)
