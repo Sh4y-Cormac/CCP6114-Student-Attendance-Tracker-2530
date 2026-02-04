@@ -12,12 +12,16 @@
 // Task Distribution
 // Member 1: Implemented sheet structure inputs such as attendance_sheet_name, number_of_columns, column1_name, column2_name, column3_name.
 //           Implemented actual insertations of the attendance rows as well;  Make sure to save all these inside an array for reference for the next person.
+//           Create input to name a school term, the school term is our ‘database,’ and we must only be able to use the ‘attendance sheets’ from that database.
 // Member 2: File saving, saves the studentID, gets input for data type for each column. saves Name and Status based on the input from the user into a file or CSV.
 //           A function can be made with parameters and can be put inside the code of member 2 for saving.
+//           Create code to UPDATE and DELETE attendance rows of a designated .csv file, which is to be able to ADD attendance sheets to the designated .csv file; e.g we can choose TT1L.csv that was created beforehand, and add data values to it.
 // Member 3: Created a login/signin welcome screen where the lecturer has to sign into her credentials.
 //           Implement basic error handling, include file saving as well for passwords and username.
+//           Create code to count the number of attendance rows within the selected ‘attendance sheet
 // Member 4: Implement a basic directory which main_menu after the original welcome screen, such as “ Type 1 to create a new attendance sheet, 2 to load an existing attendance sheet, or 3 to log out: ”,
 //           Implement basic error handling as well, e.g “ Invalid input. Please enter a number between 1 and 3.” All these functions allow a good layout as a user-friendly interface.
+//           Handle documentation, including making sure we follow the rubrics correctly. Advanced error handling and validation in the code (e.g., fault run test)
 
 #include <iostream>
 #include <string>
@@ -63,19 +67,36 @@ string sign_user, sign_pass, login_user, login_pass, saved_user, saved_pass, ter
 
 int main()
 {
-    if (Userpage() == 1)
+    bool running = true;
+    
+    while (running)
     {
-        int menuResult = main_menu();
-
-        // If user logged out (returned -1), restart program
-        if (menuResult == -1)
+        if (Userpage() == 1)
         {
-            main(); // Restart
-            return 0;
+            int menuResult = main_menu();
+            
+            if (menuResult == -1)
+            {
+                // Logout - just continue the loop to show login page again
+                cout << "Logging out..." << endl;
+                system("pause");
+                continue;
+            }
+            else if (menuResult == 0)
+            {
+                // Exit program
+                running = false;
+            }
         }
-
-        return 0;
+        else
+        {
+            // User chose to exit from login page
+            running = false;
+        }
     }
+    
+    cout << "Exiting program..." << endl;
+    return 0;
 }
 
 int Userpage()
@@ -325,7 +346,7 @@ int main_menu()
 
                             *current_table_ptr = current_table(current_table_ptr->file_path);
                             current_table_ptr->display();
-                            delete current_table_ptr; // Free allocated memory
+                            //delete current_table_ptr; // Free allocated memory
 
                         cout << "\nType 1 to create another sheet, or 0 to return main menu: " << endl;
                         cin >> choice;
