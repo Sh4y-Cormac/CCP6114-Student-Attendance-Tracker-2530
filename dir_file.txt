@@ -1,4 +1,8 @@
 TC1L-Friday.csv
 TC1L.csv
 2530\TC2L.csv
-2520\TC1L.csv
+T2520\TC1L.csvT2520\TC2L.csv
+T2520\TC3L.csv
+T2520\TT1L.csv
+T2520\TC5L.csv
+T2520\TT2L.csv

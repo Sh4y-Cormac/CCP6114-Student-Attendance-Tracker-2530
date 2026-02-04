@@ -74,58 +74,6 @@ int main()
             return 0;
         }
 
-        // string filename = login_user + ".csv";
-        //  to save the file path so the path becomes "Term1/username.csv"
-        filesystem::path filename = filesystem::path(term_name) / (login_user + ".csv");
-
-        // Only load if file exists
-        if (filesystem::exists(filename.string()))
-        {
-            *current_table_ptr = current_table(filename.string());
-            current_table_ptr->display();
-        }
-
-        // Only continue with file creation if we're still here
-        cout << "Enter sheet name: " << endl;
-        getline(cin, new_file_path);
-
-        // Check if user already added .csv, if not add it
-        if (new_file_path.length() < 4 || new_file_path.substr(new_file_path.length() - 4) != ".csv")
-        {
-            new_file_path += ".csv";
-        }
-
-        while (filesystem::exists(filesystem::path(term_name) / new_file_path)) // checks if file exist, if true, then ask for another sheet name
-        {
-            cout << "The sheet already exist enter another sheet name: ";
-            getline(cin, new_file_path);
-            if (new_file_path.length() < 4 || new_file_path.substr(new_file_path.length() - 4) != ".csv")
-            {
-                new_file_path += ".csv";
-            }
-        }
-
-        // current_table_ptr->file_path = new_file_path;
-
-        // concatenates the folder and the .csv file into a file path.
-        filesystem::path fullPath = filesystem::path(term_name) / new_file_path;
-        current_table_ptr->file_path = fullPath.string();
-
-        // Get the field definitions from column_names array (which was populated in create_sheet_structure)
-        vector<pair<int, string>> field_definitions;
-
-        for (int i = 0; i < number_of_columns; i++)
-        {
-            field_definitions.push_back(column_names[i]);
-        }
-
-        new_file_create(field_definitions, current_table_ptr->file_path); // creating the file
-
-        saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
-
-        *current_table_ptr = current_table(current_table_ptr->file_path);
-        current_table_ptr->display();
-        delete current_table_ptr; // Free allocated memory
         return 0;
     }
 }
@@ -213,7 +161,7 @@ int Userpage()
                 }
                 else
                 {
-                    ifstream inFile("database.txt");
+                    ifstream inFile("Database.txt");
 
                     if (!inFile)
                     {
@@ -294,12 +242,13 @@ void generateSchoolTerm(string folderName)
 
 int main_menu()
 {
+    string termName;
+    cout << "Before we proceed, please enter the school term you wish to analyse: " << endl;
+    cin >> termName;
+    generateSchoolTerm(termName);
+
     while (true)
     {
-        string termName;
-        cout << "Before we proceed, please enter the school term you wish to analyse: " << endl;
-        cin >> termName;
-        generateSchoolTerm(termName);
         displayMainMenu();
 
         while (true)
@@ -323,6 +272,60 @@ int main_menu()
                     {
                         create_sheet_structure();
                         cout << "\nSheet structure process has completed! " << endl;
+
+                            // string filename = login_user + ".csv";
+                            //  to save the file path so the path becomes "Term1/username.csv"
+                            filesystem::path filename = filesystem::path(term_name) / (login_user + ".csv");
+
+                            // Only load if file exists
+                            if (filesystem::exists(filename.string()))
+                            {
+                                *current_table_ptr = current_table(filename.string());
+                                current_table_ptr->display();
+                            }
+
+                            // Only continue with file creation if we're still here
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Enter sheet name: " << endl;
+                            getline(cin, new_file_path);
+
+                            // Check if user already added .csv, if not add it
+                            if (new_file_path.length() < 4 || new_file_path.substr(new_file_path.length() - 4) != ".csv")
+                            {
+                                new_file_path += ".csv";
+                            }
+
+                            while (filesystem::exists(filesystem::path(term_name) / new_file_path)) // checks if file exist, if true, then ask for another sheet name
+                            {
+                                cout << "The sheet already exist enter another sheet name: ";
+                                getline(cin, new_file_path);
+                                if (new_file_path.length() < 4 || new_file_path.substr(new_file_path.length() - 4) != ".csv")
+                                {
+                                    new_file_path += ".csv";
+                                }
+                            }
+
+                            // current_table_ptr->file_path = new_file_path;
+
+                            // concatenates the folder and the .csv file into a file path.
+                            filesystem::path fullPath = filesystem::path(term_name) / new_file_path;
+                            current_table_ptr->file_path = fullPath.string();
+
+                            // Get the field definitions from column_names array (which was populated in create_sheet_structure)
+                            vector<pair<int, string>> field_definitions;
+
+                            for (int i = 0; i < number_of_columns; i++)
+                            {
+                                field_definitions.push_back(column_names[i]);
+                            }
+
+                            new_file_create(field_definitions, current_table_ptr->file_path); // creating the file
+
+                            saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
+
+                            *current_table_ptr = current_table(current_table_ptr->file_path);
+                            current_table_ptr->display();
+                            delete current_table_ptr; // Free allocated memory
 
                         cout << "\nType 1 to create another sheet, or 0 to return main menu: " << endl;
                         cin >> choice;
@@ -510,6 +513,8 @@ void create_attendance_row(int current_attendance_row)
         {
             cout << "(enter true/false)";
         }
+
+
         getline(cin, inputs); // Use getline to read entire input including spaces
         // Use getline to read entire column name with spaces
         while (inputs != removeChar(inputs, ',')) // get input that doesnt have commas
@@ -610,7 +615,7 @@ int load_existing_attendance_sheet()
     return 0;
 }
 
-void inserting_row(int insert_pos = -1) // will ask for input if parameter is -1
+void inserting_row(int insert_pos = -1)
 {
     int insert_index;
     current_table_ptr->display(true);
@@ -636,11 +641,10 @@ void inserting_row(int insert_pos = -1) // will ask for input if parameter is -1
         }
         student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
     }
-    student_data.clear();
     cout << endl
          << endl;
     current_table_ptr->display(true);
-    if (insert_pos == -1) // will ask for input if parameter is -1
+    if (insert_pos == -1)
     {
         cout << "insert index : ";
         while (!(cin >> insert_index) || insert_index > current_table_ptr->get_field_type_list().size() || insert_index < 0)
@@ -700,6 +704,7 @@ void update_row()
 {
     string update_id;
     int position = 0;
+    bool found = false;
     current_table_ptr->display();
     cout << "Update a row by the ID: ";
     while (!(cin >> update_id) || update_id.empty())
@@ -709,6 +714,7 @@ void update_row()
         cin.ignore(9999, '\n');
         cout << "Please enter a valid ID!" << endl;
     }
+    
     for (vector<string> row : current_table_ptr->get_table())
     {
         if (row[0] == update_id)
