@@ -249,6 +249,7 @@ void displayMainMenu()
 // Creation of the 'database' / defining the selection of term for user
 void generateSchoolTerm(string folderName)
 {
+    // makes a file with the name 'folderName', returns true if able to create else false if it already exists.
     if (filesystem::create_directory(folderName))
     {
         cout << "Folder created successfully" << endl;
