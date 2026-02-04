@@ -617,7 +617,7 @@ void inserting_row(int insert_pos = -1) // will ask for input if parameter is -1
         }
         student_data.push_back(inputs); // using vector array, I am adding a datapoint into the array
     }
-    student_data.clear();
+
     cout << endl
          << endl;
     current_table_ptr->display(true);
