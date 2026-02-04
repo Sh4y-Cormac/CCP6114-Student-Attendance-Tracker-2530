@@ -46,7 +46,7 @@ int main_menu();                      // main menu function that handles user in
 int create_sheet_structure();         // this function handles the sheet structure creation
 void create_attendance_row(int);      // this function creates the attendance row process
 int load_existing_attendance_sheet(); // function to load existing attendance sheet
-void generateSchoolTerm(string); // function serves to create a new folder/load a preexisting one.
+void generateSchoolTerm(string);      // function serves to create a new folder/load a preexisting one.
 void deleting_row();
 void inserting_row(int);
 void update_row();
@@ -688,15 +688,17 @@ void inserting_row(int insert_pos = -1)
     if (insert_pos == -1)
     {
         cout << "insert index : ";
-        while (!(cin >> insert_index) || insert_index > current_table_ptr->get_field_type_list().size() || insert_index < 0)
+        while (!(cin >> insert_index) || insert_index > current_table_ptr->get_table().size() + 1 || insert_index <= 0)
         {
+            cin.clear();
+            cin.ignore(9999, '\n');
             if (cin.fail())
             {
                 cout << "Please enter a number!" << endl;
             }
             else
             {
-                cout << "Please enter a number between 0 to the number of columns in the selected sheet!" << endl;
+                cout << "Please enter a number between 1 until the max number of rows + 1 of the selected sheet!" << endl;
             }
         }
     }
@@ -704,7 +706,7 @@ void inserting_row(int insert_pos = -1)
     {
         insert_index = insert_pos;
     }
-    current_table_ptr->insert_row(insert_index, student_data);
+    current_table_ptr->insert_row(insert_index - 1, student_data);
     cout << endl
          << endl;
     current_table_ptr->display();
