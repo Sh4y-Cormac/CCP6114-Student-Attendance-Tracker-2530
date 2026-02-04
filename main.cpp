@@ -294,53 +294,55 @@ int main_menu()
                         create_sheet_structure();
                         cout << "\nSheet structure process has completed! " << endl;
 
-                            // string filename = login_user + ".csv";
-                            //  to save the file path so the path becomes "Term1/username.csv"
-                            filesystem::path filename = filesystem::path(term_name) / (login_user + ".csv");
+                        // string filename = login_user + ".csv";
+                        //  to save the file path so the path becomes "Term1/username.csv"
+                        filesystem::path filename = filesystem::path(term_name) / (login_user + ".csv");
 
-                            // Only load if file exists
-                            if (filesystem::exists(filename.string()))
-                            {
-                                *current_table_ptr = current_table(filename.string());
-                                current_table_ptr->display();
-                            }
+                        // Only load if file exists
+                        if (filesystem::exists(filename.string()))
+                        {
+                            *current_table_ptr = current_table(filename.string());
+                            current_table_ptr->display();
+                        }
 
-                            // Only continue with file creation if we're still here
-                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                            cout << "Enter sheet name: " << endl;
+                        // Only continue with file creation if we're still here
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << "Enter sheet name: " << endl;
+                        getline(cin, new_file_path);
+
+                        // Check if user already added .csv, if not add it
+                        if (new_file_path.length() < 4 || new_file_path.substr(new_file_path.length() - 4) != ".csv")
+                        {
+                            new_file_path += ".csv";
+                        }
+
+                        while (filesystem::exists(filesystem::path(term_name) / new_file_path)) // checks if file exist, if true, then ask for another sheet name
+                        {
+                            cout << "The sheet already exist enter another sheet name: ";
                             getline(cin, new_file_path);
-
-                            // Check if user already added .csv, if not add it
                             if (new_file_path.length() < 4 || new_file_path.substr(new_file_path.length() - 4) != ".csv")
                             {
                                 new_file_path += ".csv";
                             }
+                        }
 
-                            while (filesystem::exists(filesystem::path(term_name) / new_file_path)) // checks if file exist, if true, then ask for another sheet name
-                            {
-                                cout << "The sheet already exist enter another sheet name: ";
-                                getline(cin, new_file_path);
-                                if (new_file_path.length() < 4 || new_file_path.substr(new_file_path.length() - 4) != ".csv")
-                                {
-                                    new_file_path += ".csv";
-                                }
-                            }
+                        // current_table_ptr->file_path = new_file_path;
 
-                            // current_table_ptr->file_path = new_file_path;
+                        // concatenates the folder and the .csv file into a file path.
+                        filesystem::path fullPath = filesystem::path(term_name) / new_file_path;
+                        current_table_ptr->file_path = fullPath.string();
 
-                            // concatenates the folder and the .csv file into a file path.
-                            filesystem::path fullPath = filesystem::path(term_name) / new_file_path;
-                            current_table_ptr->file_path = fullPath.string();
+                        // Get the field definitions from column_names array (which was populated in create_sheet_structure)
+                        vector<pair<int, string>> field_definitions;
 
-                            // Get the field definitions from column_names array (which was populated in create_sheet_structure)
-                            vector<pair<int, string>> field_definitions;
+                        for (int i = 0; i < number_of_columns; i++)
+                        {
+                            field_definitions.push_back(column_names[i]);
+                        }
 
-                            for (int i = 0; i < number_of_columns; i++)
-                            {
-                                field_definitions.push_back(column_names[i]);
-                            }
+                        new_file_create(field_definitions, current_table_ptr->file_path); // creating the file
 
-                            new_file_create(field_definitions, current_table_ptr->file_path); // creating the file
+                        saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
 
                             saving_file_data(current_table_ptr->get_table(), current_table_ptr->file_path, false);
 
@@ -355,7 +357,7 @@ int main_menu()
                         if (choice == 0)
                         {
                             returnToMainMenu = true;
-                            break;  // Exit create loop
+                            break; // Exit create loop
                         }
                         else if (choice != 1)
                         {
@@ -363,7 +365,7 @@ int main_menu()
                             system("pause");
                         }
                     }
-                    break;  // Break to outer loop to show menu again
+                    break; // Break to outer loop to show menu again
                 }
 
                 else if (option == 2)
@@ -421,16 +423,27 @@ int create_sheet_structure()
     cout << "==============================\n"
          << endl;
 
-    cout << "Define number of columns (max 10): " << endl;
-    cin >> number_of_columns;
-    while (cin.fail())
-    {
-        cin.clear();
-        cin.ignore(9999, '\n');
 
+    do
+    {
         cout << "Define number of columns (max 10): " << endl;
         cin >> number_of_columns;
-    }
+
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(9999, '\n');
+            number_of_columns = -1; // force retry
+        }
+
+        if (number_of_columns <= 0 || number_of_columns > 10)
+        {
+            cout << "Number of columns has to be between 1 and 10." << endl;
+        }
+
+    }while (number_of_columns <= 0 || number_of_columns > 10);
+
+
 
     if (number_of_columns <= 10 && number_of_columns > 0)
     {
@@ -513,6 +526,7 @@ int create_sheet_structure()
     else
     {
         cout << "Number of columns has to be a maximum of 10 and bigger than 0" << endl;
+
     }
 
     return 0;
@@ -534,7 +548,6 @@ void create_attendance_row(int current_attendance_row)
         {
             cout << "(enter true/false)";
         }
-
 
         getline(cin, inputs); // Use getline to read entire input including spaces
         // Use getline to read entire column name with spaces
@@ -735,7 +748,7 @@ void update_row()
         cin.ignore(9999, '\n');
         cout << "Please enter a valid ID!" << endl;
     }
-    
+
     for (vector<string> row : current_table_ptr->get_table())
     {
         if (row[0] == update_id)
