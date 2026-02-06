@@ -764,7 +764,7 @@ void update_row()
         if (row[0] == update_id)
         {
             current_table_ptr->delete_row(position);
-            inserting_row(position);
+            inserting_row(position + 1);
             return;
         }
         position++;
